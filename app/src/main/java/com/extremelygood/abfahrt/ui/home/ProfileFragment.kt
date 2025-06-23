@@ -46,7 +46,7 @@ class ProfileFragment : Fragment() {
 
 
     private fun profilePictureClicked() {
-
+        Toast.makeText(requireContext(), "Hello whats up", Toast.LENGTH_SHORT).show()
     }
 
 
