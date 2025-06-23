@@ -170,6 +170,72 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- map field -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/mapFieldContainer"
+                    android:layout_width="0dp"
+                    android:layout_height="400dp"
+                    app:layout_constraintWidth_percent="0.8"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/mapBackground"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        android:hint="@string/map_hint"
+                        android:gravity="start|top"
+
+                        style="@style/TextField"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+
+                        />
+
+                    <com.google.android.gms.maps.MapView
+                        android:layout_marginTop="50dp"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+
+                        app:layout_constraintStart_toStartOf="@id/mapFieldContainer"
+                        app:layout_constraintEnd_toEndOf="@id/mapFieldContainer"
+                        app:layout_constraintTop_toTopOf="@id/mapFieldContainer"
+
+                        />
+
+                    <TextView
+                        android:id="@+id/mapRequired"
+
+                        style="@style/BaseTextAppearance"
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="21dp"
+                        android:layout_marginEnd="10dp"
+
+                        android:layout_gravity="end|top"
+
+                        android:text="@string/required_hint"
+                        android:textColor="@color/red"
+                         />
+
+
+                </FrameLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
