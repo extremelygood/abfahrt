@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Field" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox.Dense">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeColor">@color/grey_400</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Medium</item>
+
+        <item name="android:background">@drawable/field_background</item>
+    </style>
+
+
+    <style name="TextField" parent="Field">
+
+        <item name="android:textAppearance">@style/BaseTextAppearance</item>
+
+
+    </style>
+
+    <style name="BaseTextAppearance" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+</resources>
