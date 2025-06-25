@@ -36,14 +36,14 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
 
-        val resultCallback: (Map<String, Boolean>) -> Unit = { resultMap ->
+        val resultCallback: (Map<String, Boolean>, Boolean) -> Unit = { resultMap, fullSuccess ->
             Log.d("RuntimePermissions", "Got a result")
             resultMap.forEach { (permissionName, isAllowed) ->
                 Log.d("RuntimePermissions", "Permission $permissionName is allowed? $isAllowed")
             }
         }
 
-        val permissionsChecker: RuntimePermissionsChecker = RuntimePermissionsChecker(this, arrayOf(
+        val permissionsChecker: RuntimePermissionsChecker = RuntimePermissionsChecker(this, this, arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.BLUETOOTH_SCAN,
