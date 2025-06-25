@@ -71,11 +71,11 @@ class ProfileFragment : Fragment() {
 
 
     private fun profilePictureClicked() {
-        Toast.makeText(requireContext(), "Hello whats up", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Profile picture clicked", Toast.LENGTH_SHORT).show()
     }
 
     private fun firstNameInput(newInput: CharSequence?) {
-        Toast.makeText(requireContext(), newInput, Toast.LENGTH_SHORT).show()
+
     }
 
     private fun lastNameInput(newInput: CharSequence?) {
