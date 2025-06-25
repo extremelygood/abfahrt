@@ -1,10 +1,10 @@
-package com.extremelygood.abfahrt.ui.dashboard
+package com.extremelygood.abfahrt.ui.match
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class MatchViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

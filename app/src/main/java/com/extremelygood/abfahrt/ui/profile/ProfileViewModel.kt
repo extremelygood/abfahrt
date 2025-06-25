@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.ui.home
+package com.extremelygood.abfahrt.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
