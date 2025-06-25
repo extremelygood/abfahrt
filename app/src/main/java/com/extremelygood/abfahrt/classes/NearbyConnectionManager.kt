@@ -17,7 +17,7 @@ const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
 /**
  * Class for managing a nearby connection
  */
-class NearbyConnectionManagerClass(
+class NearbyConnectionManager(
     private val context: Context,
     private val channelName: String
 ) {
