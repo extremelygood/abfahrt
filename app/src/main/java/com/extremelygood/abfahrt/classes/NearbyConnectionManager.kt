@@ -10,6 +10,7 @@ import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
+import com.google.android.gms.nearby.connection.Payload
 
 const val APP_IDENTIFIER: String = "com.abfahrt"
 const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
@@ -22,12 +23,13 @@ class NearbyConnectionManager(
     private val channelName: String
 ) {
     private val connectionsClient: ConnectionsClient = Nearby.getConnectionsClient(context)
+    private val connectionsMap: MutableMap<String, NearbyConnection> = mutableMapOf()
 
 
     /**
      * Method to start advertising and automatically try to connect to them
      */
-    public fun startAdvertising() {
+    fun startAdvertising() {
         val optionsBuilder: AdvertisingOptions.Builder = AdvertisingOptions.Builder();
         val advertisingOptions: AdvertisingOptions = optionsBuilder.build()
 
@@ -51,9 +53,9 @@ class NearbyConnectionManager(
     }
 
     /**
-     * Method to start discovery
+     * Method to start discovery and automatically accept connection
      */
-    public fun startDiscovery() {
+    fun startDiscovery() {
         val optionsBuilder: DiscoveryOptions.Builder = DiscoveryOptions.Builder();
         val discoveryOptions: DiscoveryOptions = optionsBuilder.build();
 
@@ -64,10 +66,16 @@ class NearbyConnectionManager(
     /**
      * Method to stop trying to connect to a device
      */
-    public fun stopAdvertising() {
+    fun stopAdvertising() {
         connectionsClient.stopAdvertising()
     }
 
+    /**
+     * Method to invoke the connectionsClient to disconnect from an endpoint
+     */
+    fun disconnectFromEndpoint(endpointId: String) {
+        connectionsClient.disconnectFromEndpoint(endpointId)
+    }
 
     /**
      * Method to get a lifecycle callback
