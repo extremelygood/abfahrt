@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.BLUETOOTH_ADVERTISE,
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.NEARBY_WIFI_DEVICES,
-            Manifest.permission.READ_MEDIA_IMAGES),
+            ),
             resultCallback
         )
         permissionsChecker.checkPermissions()
