@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,7 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.extremelygood.abfahrt.classes.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -18,14 +21,21 @@ class ProfileFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var imagePicker: ImagePicker
+    private lateinit var profileViewModel: ProfileViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        imagePicker = ImagePicker(requireContext(), this, ::profileImageSelected)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val profileViewModel =
-            ViewModelProvider(this).get(ProfileViewModel::class.java)
+        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -71,23 +81,27 @@ class ProfileFragment : Fragment() {
 
 
     private fun profilePictureClicked() {
-        Toast.makeText(requireContext(), "Profile picture clicked", Toast.LENGTH_SHORT).show()
+        imagePicker.startPickImage()
+    }
+
+    private fun profileImageSelected(uri: Uri?) {
+        profileViewModel.onProfileImageSelected(uri)
     }
 
     private fun firstNameInput(newInput: CharSequence?) {
-
+        profileViewModel.onFirstNameSelected(newInput)
     }
 
     private fun lastNameInput(newInput: CharSequence?) {
-
+        profileViewModel.onLastNameSelected(newInput)
     }
 
     private fun ageInput(newInput: CharSequence?) {
-
+        profileViewModel.onAgeSelected(newInput)
     }
 
     private fun descriptionInput(newInput: CharSequence?) {
-
+        profileViewModel.onDescriptionSelected(newInput)
     }
 
 
