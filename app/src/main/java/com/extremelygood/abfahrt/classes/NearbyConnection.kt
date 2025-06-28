@@ -1,5 +1,9 @@
 package com.extremelygood.abfahrt.classes
 
+import com.google.android.gms.nearby.connection.Payload
+import com.google.android.gms.nearby.connection.PayloadCallback
+import com.google.android.gms.nearby.connection.PayloadTransferUpdate
+
 
 typealias DisconnectCallback = () -> Unit
 
@@ -8,7 +12,7 @@ typealias DisconnectCallback = () -> Unit
  */
 class NearbyConnection(
     private val connectionManager: NearbyConnectionManager,
-    private val endpointId: String
+    private val endpointId: CharSequence
 ) {
     private var onDisconnectCallback: DisconnectCallback? = null
 
@@ -26,16 +30,35 @@ class NearbyConnection(
     }
 
     /**
-     * Primary method for sending bytes on the lower level
+     * Method to be explicitly used by connection manager to communicate that connection no longer exists
      */
-    private fun sendBytes() {
-
+    fun handleDisconnection() {
+        onDisconnectCallback?.invoke()
     }
 
     /**
-     * Primary method for receiving bytes from the peer
+     * Method used by ConnectionManager to get a payload callback
      */
-    private fun receiveBytes() {
+    fun getPayloadCallback(): PayloadCallback {
+        val newCallbackObj = object: PayloadCallback() {
+            override fun onPayloadReceived(p0: String, p1: Payload) {
+                onPayloadReceived(p1)
+            }
+
+            override fun onPayloadTransferUpdate(p0: String, p1: PayloadTransferUpdate) {
+                onPayloadTransferUpdate(p1)
+            }
+
+        }
+
+        return newCallbackObj
+    }
+
+    private fun onPayloadReceived(payload: Payload) {
+
+    }
+
+    private fun onPayloadTransferUpdate(payloadTransferUpdate: PayloadTransferUpdate) {
 
     }
 }

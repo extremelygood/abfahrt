@@ -126,8 +126,7 @@
 
                     android:inputType="number"
                     android:hint="@string/age_hint"
-                    android:digits=""
-
+                    android:digits="0123456789"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     app:layout_constraintWidth_percent="0.8"

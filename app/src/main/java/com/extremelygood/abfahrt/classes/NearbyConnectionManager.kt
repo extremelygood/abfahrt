@@ -1,6 +1,7 @@
 package com.extremelygood.abfahrt.classes
 
 import android.content.Context
+import com.google.android.gms.common.api.internal.LifecycleCallback
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.AdvertisingOptions
 import com.google.android.gms.nearby.connection.ConnectionInfo
@@ -23,7 +24,7 @@ class NearbyConnectionManager(
     private val channelName: String
 ) {
     private val connectionsClient: ConnectionsClient = Nearby.getConnectionsClient(context)
-    private val connectionsMap: MutableMap<String, NearbyConnection> = mutableMapOf()
+    private val connectionsMap: MutableMap<CharSequence, NearbyConnection> = mutableMapOf()
 
 
     /**
@@ -33,21 +34,6 @@ class NearbyConnectionManager(
         val optionsBuilder: AdvertisingOptions.Builder = AdvertisingOptions.Builder();
         val advertisingOptions: AdvertisingOptions = optionsBuilder.build()
 
-
-        val callback = object: ConnectionLifecycleCallback() {
-            override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-                println("Connection initiated")
-            }
-
-            override fun onConnectionResult(endpointId: String, connectionResolution: ConnectionResolution) {
-                println("Connection result")
-            }
-
-            override fun onDisconnected(p0: String) {
-                println("Connection disconnected")
-            }
-
-        }
 
         val advertisement = connectionsClient.startAdvertising(TEST_TRANSMITTER_NAME, APP_IDENTIFIER, newLifecycleCallback(), advertisingOptions)
     }
@@ -73,25 +59,40 @@ class NearbyConnectionManager(
     /**
      * Method to invoke the connectionsClient to disconnect from an endpoint
      */
-    fun disconnectFromEndpoint(endpointId: String) {
-        connectionsClient.disconnectFromEndpoint(endpointId)
+    fun disconnectFromEndpoint(endpointId: CharSequence) {
+        connectionsClient.disconnectFromEndpoint(endpointId.toString())
     }
 
     /**
-     * Method to get a lifecycle callback
+     * Method to get a connection lifecycle callback
      */
     private fun newLifecycleCallback(): ConnectionLifecycleCallback {
         val callback = object: ConnectionLifecycleCallback() {
             override fun onConnectionInitiated(endpointId: String, connectionInfo: ConnectionInfo) {
-                println("Connection initiated")
+                // The way we do this is that we immediately accept a request.
+                // We also prematurely create the connection object, so that it can immediately start
+                // handling payloads.
+                // If it turns out that this connection prematurely dies via onConnectionResult, simply
+                // handle disconnect gracefully
+                val newConnection = connectionEstablished(endpointId)
+                connectionsClient.acceptConnection(endpointId, newConnection.getPayloadCallback())
             }
 
             override fun onConnectionResult(endpointId: String, connectionResolution: ConnectionResolution) {
-                println("Connection result")
+                if (connectionResolution.status.isSuccess) {
+                    // Do nothing, connection already exists
+                } else if (connectionResolution.status.isCanceled) {
+                    // Destroy the connection
+                    TODO("Implement destruction in case connection is canceled")
+                } else if (connectionResolution.status.isInterrupted) {
+                    // I don't know what this case does. Research this
+                    TODO("Check what this does")
+                }
             }
 
-            override fun onDisconnected(p0: String) {
-                println("Connection disconnected")
+            override fun onDisconnected(endpointId: String) {
+                val connectionObj = connectionsMap.remove(endpointId)
+                connectionObj?.handleDisconnection()
             }
 
         }
@@ -104,14 +105,27 @@ class NearbyConnectionManager(
     private fun newDiscoveryCallback(): EndpointDiscoveryCallback {
         val callback = object: EndpointDiscoveryCallback() {
             override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
+                val connectionObj = connectionEstablished(endpointId)
+                connectionsClient.requestConnection(TEST_TRANSMITTER_NAME, endpointId, newLifecycleCallback())
                 TODO("Not yet implemented")
             }
 
             override fun onEndpointLost(endpointId: String) {
+
                 TODO("Not yet implemented")
             }
 
         }
         return callback
+    }
+
+    /**
+     * Low-Level method executed when a connection is established
+     */
+    private fun connectionEstablished(endpointID: CharSequence): NearbyConnection {
+        val connection = NearbyConnection(this, endpointID)
+        connectionsMap[endpointID] = connection
+
+        return connection
     }
 }
