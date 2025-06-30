@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DataPacket(
-    private val message: String = "DEFAULT_MESSAGE"
+    val message: String = "DEFAULT_MESSAGE"
 )

@@ -1,5 +1,8 @@
 package com.extremelygood.abfahrt.classes
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class UserProfile(
     var firstName: String = "DefaultFirstName",
     var lastName: String = "DefaultLastName",
