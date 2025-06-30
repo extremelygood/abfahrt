@@ -11,7 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.extremelygood.abfahrt.classes.utils.ImagePicker
+import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {

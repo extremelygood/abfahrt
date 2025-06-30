@@ -9,7 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.extremelygood.abfahrt.classes.utils.RuntimePermissionsChecker
+import com.extremelygood.abfahrt.utils.RuntimePermissionsChecker
 import com.extremelygood.abfahrt.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

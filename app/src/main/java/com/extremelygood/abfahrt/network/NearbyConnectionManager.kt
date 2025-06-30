@@ -1,7 +1,6 @@
-package com.extremelygood.abfahrt.classes
+package com.extremelygood.abfahrt.network
 
 import android.content.Context
-import com.google.android.gms.common.api.internal.LifecycleCallback
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.AdvertisingOptions
 import com.google.android.gms.nearby.connection.ConnectionInfo
@@ -11,7 +10,6 @@ import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
-import com.google.android.gms.nearby.connection.Payload
 
 const val APP_IDENTIFIER: String = "com.abfahrt"
 const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
@@ -125,6 +123,7 @@ class NearbyConnectionManager(
     private fun connectionEstablished(endpointID: CharSequence): NearbyConnection {
         val connection = NearbyConnection(this, endpointID)
         connectionsMap[endpointID] = connection
+
 
         return connection
     }

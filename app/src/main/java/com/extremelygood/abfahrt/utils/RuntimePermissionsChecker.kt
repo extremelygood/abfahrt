@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.classes.utils
+package com.extremelygood.abfahrt.utils
 
 import android.content.Context
 import android.content.DialogInterface

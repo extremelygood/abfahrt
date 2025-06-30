@@ -1,9 +1,8 @@
-package com.extremelygood.abfahrt.classes
+package com.extremelygood.abfahrt.network
 
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
-
 
 typealias DisconnectCallback = () -> Unit
 
