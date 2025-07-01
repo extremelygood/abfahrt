@@ -3,6 +3,7 @@
 /.kotlin
 /local.properties
 /.idea/deploymentTargetSelector.xml
+/.idea/androidTestResultsUserPreferences.xml
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
