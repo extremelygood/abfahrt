@@ -1,24 +1,49 @@
 package com.extremelygood.abfahrt.network.packets
 
 import com.extremelygood.abfahrt.classes.UserProfile
+import com.google.android.gms.nearby.connection.Payload
+import com.google.android.gms.nearby.connection.Payload.File
+import kotlinx.serialization.Polymorphic
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+import kotlinx.serialization.modules.subclass
+
+val module = SerializersModule {
+    polymorphic(BaseDataPacket::class) {
+        subclass(HeartbeatPacket::class)
+        subclass(ProfilePacket::class)
+        subclass(RequestProfilePacket::class)
+    }
+}
+
+val PacketFormat = Json { serializersModule = module }
+
+
+class ParsedCombinedPacket(
+    metaPacket: BaseDataPacket,
+    files: MutableMap<Long, File>
+)
 
 @Serializable
 abstract class BaseDataPacket(
-    val message: String
+    val associatedFileIds: List<Long> = mutableListOf()
 )
 
 
 @Serializable
-class HeartbeatPacket : BaseDataPacket("HEARTBEAT_PACKET") {
-
-}
+@SerialName("HEARTBEAT")
+class HeartbeatPacket : BaseDataPacket()
 
 @Serializable
-class ProfilePacket(val profile: UserProfile) : BaseDataPacket("PROFILE_PACKET")
+@SerialName("PROFILE")
+class ProfilePacket(val profile: UserProfile) : BaseDataPacket()
 
 
 // Requests
 
 @Serializable
-class RequestProfilePacket() : BaseDataPacket("REQUEST_PROFILE_PACKET")
+@SerialName("REQUEST_PROFILE")
+class RequestProfilePacket() : BaseDataPacket()

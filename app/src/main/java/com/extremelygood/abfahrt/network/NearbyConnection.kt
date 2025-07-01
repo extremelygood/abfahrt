@@ -1,10 +1,17 @@
 package com.extremelygood.abfahrt.network
 
+import android.media.Image
+import com.extremelygood.abfahrt.network.packets.BaseDataPacket
+import com.extremelygood.abfahrt.network.packets.PacketFormat
+import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
+import kotlinx.serialization.decodeFromString
 
 typealias DisconnectCallback = () -> Unit
+typealias PacketReceiveCallback = (packet: ParsedCombinedPacket) -> Unit
+
 
 /**
  * Class that represents an actual connection to a device
@@ -13,8 +20,14 @@ class NearbyConnection(
     private val connectionManager: NearbyConnectionManager,
     private val endpointId: CharSequence
 ) {
-    private var onDisconnectCallback: DisconnectCallback? = null
+    /**
+     * For associating dataPackets to file payloads
+     */
+    private val fileSessions: MutableMap<Long, ImageTransferSession> = mutableMapOf()
+    private val packetSessions: ArrayList<DataPacketTransferSession> = arrayListOf()
 
+    private var onDisconnectCallback: DisconnectCallback? = null
+    private var onPacketReceiveCallback: PacketReceiveCallback? = null
 
     /**
      * Method to disconnect (effectively end) this connection
@@ -27,6 +40,11 @@ class NearbyConnection(
     fun setDisconnectCallback(callback: DisconnectCallback?) {
         onDisconnectCallback = callback
     }
+
+    fun setPacketReceiveCallback(callback: PacketReceiveCallback) {
+        this.onPacketReceiveCallback = callback
+    }
+
 
     /**
      * Method to be explicitly used by connection manager to communicate that connection no longer exists
@@ -53,11 +71,83 @@ class NearbyConnection(
         return newCallbackObj
     }
 
-    private fun onPayloadReceived(payload: Payload) {
+
+    fun sendPacket(packet: BaseDataPacket) {
 
     }
 
-    private fun onPayloadTransferUpdate(payloadTransferUpdate: PayloadTransferUpdate) {
 
+    private fun onPayloadReceived(payload: Payload) {
+
+        // Small service method to assign an imageTransferSession to a living DataPacketSession
+        fun offerToHost(imageSession: ImageTransferSession) {
+            packetSessions.forEach { packetSession ->
+                packetSession.offerImage(imageSession)
+            }
+        }
+
+
+        // Bytes are always received as a string, which is converted to a dataPacket
+        // From this, start a new packet transfer session (there may be more packets associated with this!)
+        if (payload.type == Payload.Type.BYTES) {
+
+            val json = String(payload.asBytes()!!, Charsets.UTF_8)
+            val dataPacket = PacketFormat.decodeFromString<BaseDataPacket>(json)
+
+            val packetTransferSession = DataPacketTransferSession(dataPacket)
+
+            // Internal method to cleanup (handled similarly in fail and success case)
+            fun clearFields() {
+                packetSessions.remove(packetTransferSession)
+
+                dataPacket.associatedFileIds.forEach { id ->
+                    fileSessions.remove(id)
+                }
+            }
+
+            packetTransferSession.setOnFinishedCallback { finishedPacket ->
+                onPacketReceiveCallback?.invoke(finishedPacket)
+
+                clearFields()
+            }
+            packetTransferSession.setOnFailCallback {
+                clearFields()
+            }
+            packetTransferSession.setOnExpiredCallback {
+                clearFields()
+            }
+
+            packetSessions.add(packetTransferSession)
+
+        } else if (payload.type == Payload.Type.FILE) {
+
+            val newSession = ImageTransferSession(payload)
+            fileSessions[payload.id] = newSession
+
+            // After offering to DataPacketSession, this will be overwritten
+            // Incase DataPacketSession is never found, do this manually
+            newSession.setOnFailCallback {
+                fileSessions.remove(payload.id)
+            }
+
+
+            offerToHost(newSession)
+        } else {
+            error("Unknown type received through payload")
+        }
+    }
+
+    private fun onPayloadTransferUpdate(payloadTransferUpdate: PayloadTransferUpdate) {
+        val imageSession = fileSessions[payloadTransferUpdate.payloadId] ?: return
+
+        if (payloadTransferUpdate.status == PayloadTransferUpdate.Status.SUCCESS) {
+
+            imageSession.transferSuccess()
+
+        } else if (payloadTransferUpdate.status == PayloadTransferUpdate.Status.FAILURE || payloadTransferUpdate.status == PayloadTransferUpdate.Status.CANCELED) {
+
+            imageSession.fail()
+
+        }
     }
 }
