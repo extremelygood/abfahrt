@@ -52,8 +52,12 @@ dependencies {
     implementation(libs.play.services.maps)
     implementation(libs.play.services.nearby)
     implementation(libs.kotlinx.serialization.json)
+
     testImplementation(libs.junit)
-    testImplementation(libs.mockito)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

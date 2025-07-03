@@ -4,30 +4,29 @@ import com.extremelygood.abfahrt.network.ImageTransferSession
 import com.extremelygood.abfahrt.network.DataPacketTransferSession
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.google.android.gms.nearby.connection.Payload
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-
 
 /**
  * Minimal stub of BaseDataPacket for testing: we only care about
  * `associatedFileIds`, everything else can stay default / empty.
  */
 private class StubDataPacket(
-    override val associatedFileIds: List<Long>
+    override val associatedFileIds: MutableList<Long>
 ) : BaseDataPacket()
 
 class DataPacketTransferSessionTest {
 
     /**
-     * Happy‑path: every required ImageTransferSession succeeds → the session
+     * Happy-path: every required ImageTransferSession succeeds → the session
      * should emit a ParsedCombinedPacket via the onFinished callback.
      */
     @Test
     fun `session finishes when all required file transfers succeed`() {
-        val ids = listOf(1L, 2L)
+        val ids = mutableListOf(1L, 2L)
         val dataPacket = StubDataPacket(ids)
         val session = DataPacketTransferSession(dataPacket)
 
@@ -54,7 +53,7 @@ class DataPacketTransferSessionTest {
      */
     @Test
     fun `session fails when any image session fails`() {
-        val dataPacket = StubDataPacket(listOf(42L))
+        val dataPacket = StubDataPacket(mutableListOf(42L))
         val session = DataPacketTransferSession(dataPacket)
 
         val failed = CountDownLatch(1)
@@ -69,11 +68,11 @@ class DataPacketTransferSessionTest {
         assert(failed.await(250, TimeUnit.MILLISECONDS))
     }
 
-    /** Utility: Mockito stub for a Payload with the requested id. */
+    /** Utility: mockk stub for a Payload with the requested id. */
     private fun mockPayload(id: Long): Payload {
-        val p: Payload = mock()
-        whenever(p.id).thenReturn(id)
-        whenever(p.asFile()).thenReturn(mock())
+        val p = mockk<Payload>(relaxed = true)
+        every { p.id } returns id
+        every { p.asFile() } returns mockk()   // relaxed stub for the file wrapper
         return p
     }
 }
@@ -82,13 +81,12 @@ class ImageTransferSessionTest {
 
     /**
      * transferSuccess() should flip isSuccess **and** trigger the onSuccess
-     * callback. The implementation currently misses the second part, so this
-     * test is disabled until the bug is fixed.
+     * callback.
      */
     @Test
     fun `transferSuccess marks success and calls callback`() {
-        val payload: Payload = mock()
-        whenever(payload.id).thenReturn(99L)
+        val payload = mockk<Payload>()
+        every { payload.id } returns 99L
 
         val session = ImageTransferSession(payload)
 
@@ -106,8 +104,8 @@ class ImageTransferSessionTest {
      */
     @Test
     fun `fail triggers callback`() {
-        val payload: Payload = mock()
-        whenever(payload.id).thenReturn(7L)
+        val payload = mockk<Payload>()
+        every { payload.id } returns 7L
 
         val session = ImageTransferSession(payload)
 
