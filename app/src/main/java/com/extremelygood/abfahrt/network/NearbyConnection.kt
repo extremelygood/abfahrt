@@ -1,10 +1,13 @@
 package com.extremelygood.abfahrt.network
 
 import android.media.Image
+import android.net.Uri
+import androidx.core.net.toFile
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.PacketFormat
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
+import com.google.android.gms.nearby.connection.Payload.File
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
 import kotlinx.serialization.decodeFromString
@@ -72,8 +75,24 @@ class NearbyConnection(
     }
 
 
-    fun sendPacket(packet: BaseDataPacket) {
+    fun sendPacket(packet: BaseDataPacket, associatedFileUris: List<Uri>) {
 
+        val filePayloads: MutableList<Payload> = mutableListOf()
+
+        associatedFileUris.forEach { uri ->
+            val newFilePayload = Payload.fromFile(uri.toFile())
+            filePayloads.add(newFilePayload)
+            packet.associatedFileIds.add(newFilePayload.id)
+        }
+
+        val packetPayload = Payload.fromBytes(PacketFormat.encodeToString(packet).toByteArray())
+
+
+        connectionManager.sendPayload(endpointId, packetPayload)
+
+        filePayloads.forEach { payload ->
+            connectionManager.sendPayload(endpointId, payload)
+        }
     }
 
 
@@ -86,54 +105,59 @@ class NearbyConnection(
             }
         }
 
+        fun offerAllToPacketSession(packetSession: DataPacketTransferSession) {
+            fileSessions.forEach { (_, fileSession) ->
+                packetSession.offerImage(fileSession)
+            }
+        }
 
         // Bytes are always received as a string, which is converted to a dataPacket
         // From this, start a new packet transfer session (there may be more packets associated with this!)
-        if (payload.type == Payload.Type.BYTES) {
+        when (payload.type) {
+            Payload.Type.BYTES -> {
 
-            val json = String(payload.asBytes()!!, Charsets.UTF_8)
-            val dataPacket = PacketFormat.decodeFromString<BaseDataPacket>(json)
+                val json = String(payload.asBytes()!!, Charsets.UTF_8)
+                val dataPacket = PacketFormat.decodeFromString<BaseDataPacket>(json)
 
-            val packetTransferSession = DataPacketTransferSession(dataPacket)
+                val packetTransferSession = DataPacketTransferSession(dataPacket)
 
-            // Internal method to cleanup (handled similarly in fail and success case)
-            fun clearFields() {
-                packetSessions.remove(packetTransferSession)
+                // Internal method to cleanup (handled similarly in fail and success case)
+                fun clearFields() {
+                    packetSessions.remove(packetTransferSession)
 
-                dataPacket.associatedFileIds.forEach { id ->
-                    fileSessions.remove(id)
+                    dataPacket.associatedFileIds.forEach { id ->
+                        fileSessions.remove(id)
+                    }
                 }
+
+                packetTransferSession.setOnFinishedCallback { finishedPacket ->
+                    onPacketReceiveCallback?.invoke(finishedPacket)
+
+                    clearFields()
+                }
+                packetTransferSession.setOnFailCallback {
+                    clearFields()
+                }
+
+                packetSessions.add(packetTransferSession)
+                offerAllToPacketSession(packetTransferSession)
             }
+            Payload.Type.FILE -> {
 
-            packetTransferSession.setOnFinishedCallback { finishedPacket ->
-                onPacketReceiveCallback?.invoke(finishedPacket)
+                val newSession = ImageTransferSession(payload)
+                fileSessions[payload.id] = newSession
 
-                clearFields()
+                // After offering to DataPacketSession, this will be overwritten
+                // In case DataPacketSession is never found, do this manually
+                newSession.setOnFailCallback {
+                    fileSessions.remove(payload.id)
+                }
+
+                offerToHost(newSession)
             }
-            packetTransferSession.setOnFailCallback {
-                clearFields()
+            else -> {
+                error("Unknown type received through payload")
             }
-            packetTransferSession.setOnExpiredCallback {
-                clearFields()
-            }
-
-            packetSessions.add(packetTransferSession)
-
-        } else if (payload.type == Payload.Type.FILE) {
-
-            val newSession = ImageTransferSession(payload)
-            fileSessions[payload.id] = newSession
-
-            // After offering to DataPacketSession, this will be overwritten
-            // Incase DataPacketSession is never found, do this manually
-            newSession.setOnFailCallback {
-                fileSessions.remove(payload.id)
-            }
-
-
-            offerToHost(newSession)
-        } else {
-            error("Unknown type received through payload")
         }
     }
 

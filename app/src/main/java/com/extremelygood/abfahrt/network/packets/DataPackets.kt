@@ -1,9 +1,7 @@
 package com.extremelygood.abfahrt.network.packets
 
 import com.extremelygood.abfahrt.classes.UserProfile
-import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
-import kotlinx.serialization.Polymorphic
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -23,13 +21,13 @@ val PacketFormat = Json { serializersModule = module }
 
 
 class ParsedCombinedPacket(
-    metaPacket: BaseDataPacket,
-    files: MutableMap<Long, File>
+    val metaPacket: BaseDataPacket,
+    val files: MutableMap<Long, File>
 )
 
 @Serializable
 abstract class BaseDataPacket(
-    val associatedFileIds: List<Long> = mutableListOf()
+    open val associatedFileIds: MutableList<Long> = mutableListOf()
 )
 
 

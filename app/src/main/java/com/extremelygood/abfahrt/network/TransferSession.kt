@@ -1,23 +1,16 @@
 package com.extremelygood.abfahrt.network
 
-import android.util.Printer
+import Expiring
+import ExpiringDelegate
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.math.exp
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 
 typealias onFailCallback = () -> Unit
-typealias onExpireCallback = () -> Unit
 typealias onFinishedCallback = (wrappedPacket: ParsedCombinedPacket) -> Unit
 
 val EXPIRE_TIME: Duration = 60.seconds
@@ -29,14 +22,16 @@ val EXPIRE_TIME: Duration = 60.seconds
 class DataPacketTransferSession(
     private val dataPacket: BaseDataPacket,
 
-) {
+): Expiring by ExpiringDelegate() {
+
+
     private var onFinished: onFinishedCallback? = null
-    private var onExpired: onExpireCallback? = null
     private var onFail: onFailCallback? = null
 
     private val files: MutableMap<Long, ImageTransferSession> = mutableMapOf()
 
     private fun finish() {
+        cancelExpiring()
 
         val filesMap: MutableMap<Long, File> = mutableMapOf()
         files.forEach { (id, transferSession) ->
@@ -47,7 +42,6 @@ class DataPacketTransferSession(
 
         onFinished?.invoke(finishedPacket)
 
-        TODO("Add expiration timer cancel here")
     }
 
     private fun checkFinished() {
@@ -80,6 +74,8 @@ class DataPacketTransferSession(
 
     // If any part of the session fails, everything fails
     private fun fail() {
+        cancelExpiring()
+
         onFail?.invoke()
     }
 
@@ -105,15 +101,19 @@ class DataPacketTransferSession(
         onFinished = callback
     }
 
-    fun setOnExpiredCallback(callback: onExpireCallback) {
-        onExpired = callback
-    }
-
     fun setOnFailCallback(callback: onFailCallback) {
         onFail = callback
     }
 
 
+    private fun onExpired() {
+        fail()
+    }
+
+    init {
+        startExpiring(EXPIRE_TIME, ::onExpired)
+        checkFinished()
+    }
 }
 
 
@@ -121,19 +121,15 @@ typealias OnSuccessCallback = () -> Unit
 
 class ImageTransferSession(
     val payload: Payload,
-) {
+): Expiring by ExpiringDelegate() {
     init {
-        startExpirationTimer()
+        startExpiring(EXPIRE_TIME, ::onExpired)
     }
 
     var isSuccess = false
 
     private var onFailCallback: onFailCallback? = null
-    private var onExpireCallback: onExpireCallback? = null
     private var onSuccessCallback: OnSuccessCallback? = null
-
-    private var expirationJob: Job? = null
-
 
 
 
@@ -145,25 +141,14 @@ class ImageTransferSession(
         onSuccessCallback = onSuccess
     }
 
-    private fun setOnExpiredCallback(onExpired: onExpireCallback) {
-        onExpireCallback = onExpired
-    }
-
-    private fun startExpirationTimer() {
-        val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        expirationJob = scope.launch {
-            delay(EXPIRE_TIME)
-            onExpired()
-        }
-    }
-
     fun transferSuccess() {
         isSuccess = true
-        expirationJob?.cancel()
+        cancelExpiring()
+        onSuccessCallback?.invoke()
     }
 
     fun fail() {
-        expirationJob?.cancel()
+        cancelExpiring()
         onFailCallback?.invoke()
     }
 
@@ -171,7 +156,6 @@ class ImageTransferSession(
         if (!isSuccess) {
             fail()
         }
-        onExpireCallback?.invoke()
     }
 
 

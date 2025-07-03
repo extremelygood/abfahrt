@@ -10,6 +10,7 @@ import com.google.android.gms.nearby.connection.ConnectionsClient
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
+import com.google.android.gms.nearby.connection.Payload
 
 const val APP_IDENTIFIER: String = "com.abfahrt"
 const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
@@ -23,6 +24,10 @@ class NearbyConnectionManager(
 ) {
     private val connectionsClient: ConnectionsClient = Nearby.getConnectionsClient(context)
     private val connectionsMap: MutableMap<CharSequence, NearbyConnection> = mutableMapOf()
+
+    fun sendPayload(endpointId: CharSequence, payload: Payload) {
+        connectionsClient.sendPayload(endpointId.toString(), payload)
+    }
 
 
     /**
@@ -77,20 +82,24 @@ class NearbyConnectionManager(
             }
 
             override fun onConnectionResult(endpointId: String, connectionResolution: ConnectionResolution) {
-                if (connectionResolution.status.isSuccess) {
-                    // Do nothing, connection already exists
-                } else if (connectionResolution.status.isCanceled) {
-                    // Destroy the connection
-                    TODO("Implement destruction in case connection is canceled")
-                } else if (connectionResolution.status.isInterrupted) {
-                    // I don't know what this case does. Research this
-                    TODO("Check what this does")
+                when {
+                    connectionResolution.status.isSuccess -> {
+                        // Do nothing, connection already exists
+                    }
+                    connectionResolution.status.isCanceled -> {
+                        // Destroy the connection
+                        destroyNearbyConnection(endpointId)
+                    }
+                    connectionResolution.status.isInterrupted -> {
+                        // I don't know what this case does. Research this
+                        destroyNearbyConnection(endpointId)
+                        TODO("Check what this does")
+                    }
                 }
             }
 
             override fun onDisconnected(endpointId: String) {
-                val connectionObj = connectionsMap.remove(endpointId)
-                connectionObj?.handleDisconnection()
+                destroyNearbyConnection(endpointId)
             }
 
         }
@@ -105,12 +114,10 @@ class NearbyConnectionManager(
             override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
                 val connectionObj = connectionEstablished(endpointId)
                 connectionsClient.requestConnection(TEST_TRANSMITTER_NAME, endpointId, newLifecycleCallback())
-                TODO("Not yet implemented")
             }
 
             override fun onEndpointLost(endpointId: String) {
-
-                TODO("Not yet implemented")
+                destroyNearbyConnection(endpointId)
             }
 
         }
@@ -126,5 +133,13 @@ class NearbyConnectionManager(
 
 
         return connection
+    }
+
+    /**
+     * Low-Level method executed when a connection is (to-be) destroyed
+     */
+    private fun destroyNearbyConnection(endpointId: CharSequence) {
+        val connectionObj = connectionsMap.remove(endpointId)
+        connectionObj?.handleDisconnection()
     }
 }
