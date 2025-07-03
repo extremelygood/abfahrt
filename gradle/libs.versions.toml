@@ -2,7 +2,6 @@
 agp = "8.10.1"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
-junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.1"
@@ -18,14 +17,10 @@ activity = "1.10.1"
 fragment = "1.8.8"
 serialization = "1.8.1"
 mockk = "1.14.4"
-junitJupiter = "5.12.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-mockk-android = { group = "io.mockk", name = "mockk-android", version.ref = "mockk"}
-mockk-agent = {group = "io.mockk", name = "mockk-agent", version.ref = "mockk"}
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+mockk = { group = "io.mockk", name  = "mockk", version.ref = "mockk"}
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
@@ -39,7 +34,6 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 play-services-nearby = { group = "com.google.android.gms", name = "play-services-nearby", version.ref = "playServiceNearby"}
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization"}
-junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

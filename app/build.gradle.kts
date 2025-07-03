@@ -37,6 +37,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    testOptions {
+        unitTests.all {
+            it.useJUnitPlatform()
+        }
+    }
 }
 
 dependencies {
@@ -53,12 +59,9 @@ dependencies {
     implementation(libs.play.services.nearby)
     implementation(libs.kotlinx.serialization.json)
 
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk.agent)
-    testImplementation(libs.mockk.android)
-    testImplementation(libs.junit.jupiter)
-    androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(libs.mockk.agent)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation(libs.mockk)
+    testImplementation(kotlin("test"))
+    androidTestImplementation(libs.mockk)
+    androidTestImplementation(kotlin("test"))
     androidTestImplementation(libs.androidx.espresso.core)
 }

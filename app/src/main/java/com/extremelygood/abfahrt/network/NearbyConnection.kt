@@ -74,7 +74,11 @@ class NearbyConnection(
         return newCallbackObj
     }
 
-
+    /**
+     * Method to send an outbound packet to peer
+     * @param packet, message you wish to send
+     * @param associatedFileUris, any files you wish to append to this message
+     */
     fun sendPacket(packet: BaseDataPacket, associatedFileUris: List<Uri>) {
 
         val filePayloads: MutableList<Payload> = mutableListOf()
