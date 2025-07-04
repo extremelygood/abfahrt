@@ -38,11 +38,18 @@ android {
         viewBinding = true
     }
 
-    testOptions {
-        unitTests.all {
-            it.useJUnitPlatform()
+    packaging {
+        resources {
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
+
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
+
+
 }
 
 dependencies {
@@ -60,8 +67,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.mockk)
-    testImplementation(kotlin("test"))
+    testImplementation(libs.junit)
     androidTestImplementation(libs.mockk.android)
-    androidTestImplementation(kotlin("test"))
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

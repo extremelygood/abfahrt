@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
  * `associatedFileIds`, everything else can stay default / empty.
  */
 private class StubDataPacket(
-    override val associatedFileIds: MutableList<Long>
+    override var associatedFileIds: MutableList<Long>
 ) : BaseDataPacket()
 
 class DataPacketTransferSessionTest {
