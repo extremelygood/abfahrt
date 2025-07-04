@@ -6,7 +6,7 @@ import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.google.android.gms.nearby.connection.Payload
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.jupiter.api.Test
+import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
