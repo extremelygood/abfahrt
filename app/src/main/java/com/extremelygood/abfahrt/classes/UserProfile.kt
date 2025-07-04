@@ -1,6 +1,11 @@
 package com.extremelygood.abfahrt.classes
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "user_profile")
 data class UserProfile(
+    @PrimaryKey val id: String = "me",
     var firstName: String = "DefaultFirstName",
     var lastName: String = "DefaultLastName",
     var age: Int = -1,
