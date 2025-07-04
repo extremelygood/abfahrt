@@ -11,23 +11,27 @@ import com.google.android.gms.nearby.connection.Payload.File
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
 import kotlinx.serialization.decodeFromString
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 typealias DisconnectCallback = () -> Unit
 typealias PacketReceiveCallback = (packet: ParsedCombinedPacket) -> Unit
 
+val DEFAULT_EXPIRE_TIME: Duration = 60.seconds
 
 /**
  * Class that represents an actual connection to a device
  */
 class NearbyConnection(
     private val connectionManager: NearbyConnectionManager,
-    private val endpointId: CharSequence
+    private val endpointId: CharSequence,
+    private val sessionExpireTime: Duration = DEFAULT_EXPIRE_TIME,
 ) {
     /**
      * For associating dataPackets to file payloads
      */
-    private val fileSessions: MutableMap<Long, ImageTransferSession> = mutableMapOf()
-    private val packetSessions: ArrayList<DataPacketTransferSession> = arrayListOf()
+    internal val fileSessions: MutableMap<Long, ImageTransferSession> = mutableMapOf()
+    internal val packetSessions: ArrayList<DataPacketTransferSession> = arrayListOf()
 
     private var onDisconnectCallback: DisconnectCallback? = null
     private var onPacketReceiveCallback: PacketReceiveCallback? = null
@@ -123,7 +127,7 @@ class NearbyConnection(
                 val json = String(payload.asBytes()!!, Charsets.UTF_8)
                 val dataPacket = PacketFormat.decodeFromString<BaseDataPacket>(json)
 
-                val packetTransferSession = DataPacketTransferSession(dataPacket)
+                val packetTransferSession = DataPacketTransferSession(dataPacket, sessionExpireTime)
 
                 // Internal method to cleanup (handled similarly in fail and success case)
                 fun clearFields() {
@@ -148,7 +152,7 @@ class NearbyConnection(
             }
             Payload.Type.FILE -> {
 
-                val newSession = ImageTransferSession(payload)
+                val newSession = ImageTransferSession(payload, sessionExpireTime)
                 fileSessions[payload.id] = newSession
 
                 // After offering to DataPacketSession, this will be overwritten

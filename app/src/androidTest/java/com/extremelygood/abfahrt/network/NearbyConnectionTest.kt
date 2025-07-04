@@ -1,9 +1,7 @@
-package com.extremelygood.abfahrt
+package com.extremelygood.abfahrt.network
 
 import androidx.core.net.toFile
 import com.extremelygood.abfahrt.classes.UserProfile
-import com.extremelygood.abfahrt.network.NearbyConnection
-import com.extremelygood.abfahrt.network.NearbyConnectionManager
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.PacketFormat
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
@@ -18,9 +16,12 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.Assert.*
 import java.io.File
+import kotlin.time.Duration.Companion.milliseconds
+
 
 
 const val ENDPOINT_ID = "50"
+const val TEST_TIMEOUT_MILLIS = 5000L
 
 class NearbyConnectionTest {
 
@@ -31,7 +32,7 @@ class NearbyConnectionTest {
     @Before
     fun prepare() {
         connectionManager = mockk<NearbyConnectionManager>(relaxed = true)
-        nearbyConnection = NearbyConnection(connectionManager, ENDPOINT_ID)
+        nearbyConnection = NearbyConnection(connectionManager, ENDPOINT_ID, 50.milliseconds)
         payloadCallback = nearbyConnection.getPayloadCallback()
     }
 
@@ -178,12 +179,32 @@ class NearbyConnectionTest {
 
     @Test
     fun testDataPacketExpire() {
+        val myPacket = RequestProfilePacket()
+        myPacket.associatedFileIds = mutableListOf<Long>(5, 9) // Will infinitely wait for non existant files
+
+        payloadCallback.onPayloadReceived(ENDPOINT_ID, transformPacketToPayload(myPacket))
+
+        val start = System.currentTimeMillis()
+        while (System.currentTimeMillis() - start < TEST_TIMEOUT_MILLIS) {
+            if (nearbyConnection.packetSessions.isEmpty()) break
+            Thread.sleep(50)
+        }
+        assertTrue(nearbyConnection.packetSessions.isEmpty())
 
     }
 
     @Test()
     fun testFileExpire() {
+        val myFilePayload = getFakeFilePayload()
 
+        payloadCallback.onPayloadReceived(ENDPOINT_ID, myFilePayload)
+
+        val start = System.currentTimeMillis()
+        while (System.currentTimeMillis() - start < TEST_TIMEOUT_MILLIS) {
+            if (nearbyConnection.fileSessions.isEmpty()) break
+            Thread.sleep(50)
+        }
+        assertTrue(nearbyConnection.fileSessions.isEmpty())
     }
 
     /**

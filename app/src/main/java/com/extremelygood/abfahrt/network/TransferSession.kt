@@ -6,6 +6,7 @@ import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
+import kotlin.math.exp
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -13,7 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 typealias onFailCallback = () -> Unit
 typealias onFinishedCallback = (wrappedPacket: ParsedCombinedPacket) -> Unit
 
-val EXPIRE_TIME: Duration = 60.seconds
+
 
 
 /**
@@ -21,7 +22,7 @@ val EXPIRE_TIME: Duration = 60.seconds
  */
 class DataPacketTransferSession(
     private val dataPacket: BaseDataPacket,
-
+    private val expireTime: Duration
 ): Expiring by ExpiringDelegate() {
 
 
@@ -112,7 +113,7 @@ class DataPacketTransferSession(
     }
 
     init {
-        startExpiring(EXPIRE_TIME, ::onExpired)
+        startExpiring(expireTime, ::onExpired)
     }
 }
 
@@ -121,9 +122,10 @@ typealias OnSuccessCallback = () -> Unit
 
 class ImageTransferSession(
     val payload: Payload,
+    private val expireTime: Duration
 ): Expiring by ExpiringDelegate() {
     init {
-        startExpiring(EXPIRE_TIME, ::onExpired)
+        startExpiring(expireTime, ::onExpired)
     }
 
     var isSuccess = false
