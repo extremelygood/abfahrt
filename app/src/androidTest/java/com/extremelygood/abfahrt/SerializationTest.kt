@@ -22,8 +22,8 @@ class SerializationTest {
             lastName,
             age,
             description
-        );
-        val myPacket = ProfilePacket(myProfile);
+        )
+        val myPacket = ProfilePacket(myProfile)
 
         val json = PacketFormat.encodeToString(BaseDataPacket.serializer(), myPacket)
         val decodedObject = PacketFormat.decodeFromString(BaseDataPacket.serializer(), json)
