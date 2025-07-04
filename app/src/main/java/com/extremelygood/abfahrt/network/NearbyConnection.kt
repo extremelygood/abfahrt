@@ -77,14 +77,14 @@ class NearbyConnection(
     /**
      * Method to send an outbound packet to peer
      * @param packet, message you wish to send
-     * @param associatedFileUris, any files you wish to append to this message
+     * @param associatedFiles, any (java File!) files you wish to append to this message
      */
-    fun sendPacket(packet: BaseDataPacket, associatedFileUris: List<Uri>) {
+    fun sendPacket(packet: BaseDataPacket, associatedFiles: List<java.io.File>) {
 
         val filePayloads: MutableList<Payload> = mutableListOf()
 
-        associatedFileUris.forEach { uri ->
-            val newFilePayload = Payload.fromFile(uri.toFile())
+        associatedFiles.forEach { file ->
+            val newFilePayload = Payload.fromFile(file)
             filePayloads.add(newFilePayload)
             packet.associatedFileIds.add(newFilePayload.id)
         }
