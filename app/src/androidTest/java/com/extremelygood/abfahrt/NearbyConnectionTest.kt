@@ -1,10 +1,13 @@
 package com.extremelygood.abfahrt
 
+import androidx.core.net.toFile
+import com.extremelygood.abfahrt.classes.UserProfile
 import com.extremelygood.abfahrt.network.NearbyConnection
 import com.extremelygood.abfahrt.network.NearbyConnectionManager
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.PacketFormat
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
+import com.extremelygood.abfahrt.network.packets.ProfilePacket
 import com.extremelygood.abfahrt.network.packets.RequestProfilePacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
@@ -34,7 +37,7 @@ class NearbyConnectionTest {
 
     @Test
     fun testSendPacket() {
-        val myDataPacket = RequestProfilePacket()
+        val myDataPacket = ProfilePacket(UserProfile())
 
         nearbyConnection.sendPacket(myDataPacket, listOf())
 
@@ -46,7 +49,14 @@ class NearbyConnectionTest {
                 withArg { payload ->
                     assertEquals(Payload.Type.BYTES, payload.type)
                     val containedPacket = PacketFormat.decodeFromString<BaseDataPacket>(String(payload.asBytes()!!, Charsets.UTF_8))
-                    assertTrue(containedPacket is RequestProfilePacket)
+                    assertTrue(containedPacket is ProfilePacket)
+
+                    val profilePacket = containedPacket as ProfilePacket
+                    assertEquals(myDataPacket.profile.id,profilePacket.profile.id)
+                    assertEquals(myDataPacket.profile.age, profilePacket.profile.age)
+                    assertEquals(myDataPacket.profile.firstName, profilePacket.profile.firstName)
+                    assertEquals(myDataPacket.profile.lastName, profilePacket.profile.lastName)
+                    assertEquals(myDataPacket.profile.description, profilePacket.profile.description)
                 })
         }
     }
@@ -75,6 +85,9 @@ class NearbyConnectionTest {
         val myPacket = RequestProfilePacket()
         val filePayload1 = getFakeFilePayload()
         val filePayload2 = getFakeFilePayload()
+        val fakeFile1 = filePayload1.asFile()!!.asUri()!!.toFile()
+        val fakeFile2 = filePayload2.asFile()!!.asUri()!!.toFile()
+
         myPacket.associatedFileIds = mutableListOf(filePayload1.id, filePayload2.id)
 
 
@@ -99,13 +112,68 @@ class NearbyConnectionTest {
         verify(exactly = 1) {
             mockCallback.invoke(withArg { combinedPacket ->
                 assertTrue(combinedPacket.metaPacket is RequestProfilePacket)
+                assertTrue(combinedPacket.files[filePayload1.id] != null)
+                assertTrue(combinedPacket.files[filePayload2.id] != null)
+
+                val fileUri1 = combinedPacket.files[filePayload1.id]!!.asUri()!!
+                val javaFile1 = fileUri1.toFile()
+
+                val fileUri2 = combinedPacket.files[filePayload2.id]!!.asUri()!!
+                val javaFile2 = fileUri2.toFile()
+
+
+                assertEquals(fakeFile1.length(), javaFile1.length())
+                assertEquals(fakeFile2.length(), javaFile2.length())
             })
         }
     }
 
     @Test
     fun testReceiveFilesAndDataPacket() {
+        val myPacket = RequestProfilePacket()
+        val filePayload1 = getFakeFilePayload()
+        val filePayload2 = getFakeFilePayload()
+        val fakeFile1 = filePayload1.asFile()!!.asUri()!!.toFile()
+        val fakeFile2 = filePayload2.asFile()!!.asUri()!!.toFile()
 
+        myPacket.associatedFileIds = mutableListOf(filePayload1.id, filePayload2.id)
+
+
+        val mockCallback = mockk<(ParsedCombinedPacket) -> Unit>(relaxed = true)
+        nearbyConnection.setPacketReceiveCallback(mockCallback)
+
+        payloadCallback.onPayloadReceived(ENDPOINT_ID, filePayload1)
+        payloadCallback.onPayloadReceived(ENDPOINT_ID, filePayload2)
+        payloadCallback.onPayloadReceived(ENDPOINT_ID, transformPacketToPayload(myPacket))
+
+
+        val transferUpdateBuilder = PayloadTransferUpdate.Builder()
+        transferUpdateBuilder.setStatus(PayloadTransferUpdate.Status.SUCCESS)
+
+        transferUpdateBuilder.setPayloadId(filePayload1.id)
+        payloadCallback.onPayloadTransferUpdate(ENDPOINT_ID, transferUpdateBuilder.build())
+
+        transferUpdateBuilder.setPayloadId(filePayload2.id)
+        payloadCallback.onPayloadTransferUpdate(ENDPOINT_ID, transferUpdateBuilder.build())
+
+
+        verify(exactly = 1) {
+            mockCallback.invoke(withArg { combinedPacket ->
+                assertTrue(combinedPacket.metaPacket is RequestProfilePacket)
+                assertTrue(combinedPacket.files[filePayload1.id] != null)
+                assertTrue(combinedPacket.files[filePayload2.id] != null)
+
+                val fileUri1 = combinedPacket.files[filePayload1.id]!!.asUri()!!
+                val javaFile1 = fileUri1.toFile()
+
+                val fileUri2 = combinedPacket.files[filePayload2.id]!!.asUri()!!
+                val javaFile2 = fileUri2.toFile()
+
+
+                assertEquals(fakeFile1.length(), javaFile1.length())
+                assertEquals(fakeFile2.length(), javaFile2.length())
+            })
+        }
     }
 
     @Test
