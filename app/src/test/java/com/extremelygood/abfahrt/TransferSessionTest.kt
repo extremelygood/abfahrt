@@ -9,6 +9,7 @@ import io.mockk.mockk
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Minimal stub of BaseDataPacket for testing: we only care about
@@ -17,6 +18,8 @@ import java.util.concurrent.TimeUnit
 private class StubDataPacket(
     override var associatedFileIds: MutableList<Long>
 ) : BaseDataPacket()
+
+val DEFAULT_EXPIRE_TIME = 50.milliseconds
 
 class DataPacketTransferSessionTest {
 
@@ -28,7 +31,7 @@ class DataPacketTransferSessionTest {
     fun `session finishes when all required file transfers succeed`() {
         val ids = mutableListOf(1L, 2L)
         val dataPacket = StubDataPacket(ids)
-        val session = DataPacketTransferSession(dataPacket)
+        val session = DataPacketTransferSession(dataPacket, DEFAULT_EXPIRE_TIME)
 
         val finished = CountDownLatch(1)
         session.setOnFinishedCallback { combined ->
@@ -39,7 +42,7 @@ class DataPacketTransferSessionTest {
         // Provide an ImageTransferSession for each required id and mark it successful.
         ids.forEach { id ->
             val payload = mockPayload(id)
-            val imageSession = ImageTransferSession(payload)
+            val imageSession = ImageTransferSession(payload, DEFAULT_EXPIRE_TIME)
             session.offerImage(imageSession)
             imageSession.transferSuccess()
         }
@@ -54,13 +57,13 @@ class DataPacketTransferSessionTest {
     @Test
     fun `session fails when any image session fails`() {
         val dataPacket = StubDataPacket(mutableListOf(42L))
-        val session = DataPacketTransferSession(dataPacket)
+        val session = DataPacketTransferSession(dataPacket, DEFAULT_EXPIRE_TIME)
 
         val failed = CountDownLatch(1)
         session.setOnFailCallback { failed.countDown() }
 
         val payload = mockPayload(42L)
-        val imageSession = ImageTransferSession(payload)
+        val imageSession = ImageTransferSession(payload, DEFAULT_EXPIRE_TIME)
         session.offerImage(imageSession)
 
         imageSession.fail()
@@ -88,7 +91,7 @@ class ImageTransferSessionTest {
         val payload = mockk<Payload>()
         every { payload.id } returns 99L
 
-        val session = ImageTransferSession(payload)
+        val session = ImageTransferSession(payload, DEFAULT_EXPIRE_TIME)
 
         var successFlag = false
         session.setOnSuccessCallback { successFlag = true }
@@ -107,7 +110,7 @@ class ImageTransferSessionTest {
         val payload = mockk<Payload>()
         every { payload.id } returns 7L
 
-        val session = ImageTransferSession(payload)
+        val session = ImageTransferSession(payload, DEFAULT_EXPIRE_TIME)
 
         val failed = CountDownLatch(1)
         session.setOnFailCallback { failed.countDown() }
