@@ -10,12 +10,14 @@ class SerializationTest {
 
     @Test
     fun packetSerializationResultTest() {
+        val primaryKey = "TheKey"
         val name = "Ralf"
         val lastName = "Schumacher"
         val age = 30
         val description = "Fast driver"
 
         val myProfile = UserProfile(
+            primaryKey,
             name,
             lastName,
             age,
