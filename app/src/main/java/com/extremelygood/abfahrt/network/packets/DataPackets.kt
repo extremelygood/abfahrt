@@ -27,7 +27,7 @@ class ParsedCombinedPacket(
 
 @Serializable
 abstract class BaseDataPacket(
-    open val associatedFileIds: MutableList<Long> = mutableListOf()
+    open var associatedFileIds: MutableList<Long> = mutableListOf()
 )
 
 
