@@ -1,16 +1,11 @@
 package com.extremelygood.abfahrt.network
 
-import android.media.Image
-import android.net.Uri
-import androidx.core.net.toFile
 import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.PacketFormat
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
-import com.google.android.gms.nearby.connection.Payload.File
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
-import kotlinx.serialization.decodeFromString
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

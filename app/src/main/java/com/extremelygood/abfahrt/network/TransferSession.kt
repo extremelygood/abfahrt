@@ -6,9 +6,7 @@ import com.extremelygood.abfahrt.network.packets.BaseDataPacket
 import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
-import kotlin.math.exp
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 
 typealias onFailCallback = () -> Unit
