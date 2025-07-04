@@ -61,12 +61,12 @@ class NearbyConnection(
      */
     fun getPayloadCallback(): PayloadCallback {
         val newCallbackObj = object: PayloadCallback() {
-            override fun onPayloadReceived(p0: String, p1: Payload) {
-                onPayloadReceived(p1)
+            override fun onPayloadReceived(endpointId: String, payload: Payload) {
+                onPayloadReceived(payload)
             }
 
-            override fun onPayloadTransferUpdate(p0: String, p1: PayloadTransferUpdate) {
-                onPayloadTransferUpdate(p1)
+            override fun onPayloadTransferUpdate(endpointId: String, payloadTransferUpdate: PayloadTransferUpdate) {
+                onPayloadTransferUpdate(payloadTransferUpdate)
             }
 
         }

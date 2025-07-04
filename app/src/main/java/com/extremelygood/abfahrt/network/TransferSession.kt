@@ -99,6 +99,7 @@ class DataPacketTransferSession(
 
     fun setOnFinishedCallback(callback: onFinishedCallback) {
         onFinished = callback
+        checkFinished()
     }
 
     fun setOnFailCallback(callback: onFailCallback) {
@@ -112,7 +113,6 @@ class DataPacketTransferSession(
 
     init {
         startExpiring(EXPIRE_TIME, ::onExpired)
-        checkFinished()
     }
 }
 
