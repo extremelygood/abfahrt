@@ -25,6 +25,12 @@ class NearbyConnectionManager(
     private val connectionsClient: ConnectionsClient = Nearby.getConnectionsClient(context)
     private val connectionsMap: MutableMap<CharSequence, NearbyConnection> = mutableMapOf()
 
+    private var onConnectionEstablishedCallback: ((NearbyConnection) -> Unit)? = null
+
+    fun setOnConnectionEstablished(callback: (NearbyConnection) -> Unit) {
+        this.onConnectionEstablishedCallback = callback
+    }
+
     fun sendPayload(endpointId: CharSequence, payload: Payload) {
         connectionsClient.sendPayload(endpointId.toString(), payload)
     }
@@ -131,6 +137,7 @@ class NearbyConnectionManager(
         val connection = NearbyConnection(this, endpointID)
         connectionsMap[endpointID] = connection
 
+        onConnectionEstablishedCallback?.invoke(connection)
 
         return connection
     }
