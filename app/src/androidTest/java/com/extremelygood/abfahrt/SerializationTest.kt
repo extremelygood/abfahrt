@@ -1,9 +1,9 @@
 package com.extremelygood.abfahrt
 
 import com.extremelygood.abfahrt.classes.UserProfile
-import com.extremelygood.abfahrt.network.packets.BaseDataPacket
-import com.extremelygood.abfahrt.network.packets.PacketFormat
-import com.extremelygood.abfahrt.network.packets.ProfilePacket
+import com.extremelygood.abfahrt.network.BaseDataPacket
+import com.extremelygood.abfahrt.network.PacketFormat
+import com.extremelygood.abfahrt.network.ProfilePacket
 import org.junit.Test
 
 class SerializationTest {
