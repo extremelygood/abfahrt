@@ -2,11 +2,6 @@ package com.extremelygood.abfahrt.network
 
 import androidx.core.net.toFile
 import com.extremelygood.abfahrt.classes.UserProfile
-import com.extremelygood.abfahrt.network.packets.BaseDataPacket
-import com.extremelygood.abfahrt.network.packets.PacketFormat
-import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
-import com.extremelygood.abfahrt.network.packets.ProfilePacket
-import com.extremelygood.abfahrt.network.packets.RequestProfilePacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
