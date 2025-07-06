@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.network
 
+import MatchProfile
 import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.nearby.connection.Payload.File
 import kotlinx.serialization.SerialName
@@ -12,8 +13,10 @@ import kotlinx.serialization.modules.subclass
 val module = SerializersModule {
     polymorphic(BaseDataPacket::class) {
         subclass(HeartbeatPacket::class)
-        subclass(ProfilePacket::class)
-        subclass(RequestProfilePacket::class)
+        subclass(EncounterPacket::class)
+        subclass(ImagePacket::class)
+        subclass(RequestEncountersListPacket::class)
+        subclass(RequestEncountersPacket::class)
         subclass(RequestImagePacket::class)
     }
 }
@@ -36,20 +39,51 @@ abstract class BaseDataPacket(
 @SerialName("HEARTBEAT")
 class HeartbeatPacket : BaseDataPacket()
 
-@Serializable
-@SerialName("PROFILE")
-class ProfilePacket(val profile: UserProfile) : BaseDataPacket()
 
+/**
+ * Packet to transmit an encounter this device has made (may include its own profile as an encounter)
+ */
+@Serializable
+@SerialName("ENCOUNTER")
+class EncounterPacket(val encounter: TransmittedEncounter) : BaseDataPacket()
+
+/**
+ * Packet to transmit a list of Ids this client possesses
+ */
+@Serializable
+@SerialName("ENCOUNTERS_LIST")
+class EncountersListPacket(val profileIdslist: List<String>) : BaseDataPacket()
+
+/**
+ * Packet to transmit an image, with userId and imageType
+ */
 @Serializable
 @SerialName("IMAGE")
-class ImagePacket(val imageType: String)
+class ImagePacket(val userId: String, val imageType: String): BaseDataPacket()
+
 
 // Requests
 
-@Serializable
-@SerialName("REQUEST_PROFILE")
-class RequestProfilePacket() : BaseDataPacket()
 
+/**
+ * Packet to invoke the peer to send a list of their stored profiles. Used to discover new profiles
+ * (but without any data! just their IDs)
+ */
+@Serializable
+@SerialName("REQUEST_ENCOUNTERS_LIST")
+class RequestEncountersListPacket() : BaseDataPacket()
+
+/**
+ * Packet to request a specific set of profiles, after looking through the peers offer
+ */
+@Serializable
+@SerialName("REQUEST_ENCOUNTERS")
+class RequestEncountersPacket(val profileIdsList: List<String>) : BaseDataPacket()
+
+
+/**
+ * Packet to request an image from peer, with userId and imageType
+ */
 @Serializable
 @SerialName("REQUEST_IMAGE")
 class RequestImagePacket(val userId: String, val imageType: String) : BaseDataPacket()

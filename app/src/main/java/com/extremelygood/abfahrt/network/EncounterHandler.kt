@@ -37,13 +37,18 @@ class EncounterHandler(
     }
 
 
-
+    /**
+     * Origin function to start getting the data from peer
+     * The way this is supposed to work is that _this_ is simply trying to "invoke" data from
+     * the peer. We are listening for any peer requests to be fulfilled, peer is listening to
+     * fulfill our requests.
+     */
     fun start() {
         end()
 
         mainJob = myCoroutineScope.launch {
 
-            // Step 1: Exchange profiles
+
 
             val encountersDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
             val profileDeferred = async { database.loadMyProfile() }
@@ -59,16 +64,56 @@ class EncounterHandler(
         mainJob?.cancel()
     }
 
-    private fun handleRequestProfile() {
-        val myProfile = UserProfile() // database.getProfile() should be here
 
-        connection.sendPacket(ProfilePacket(myProfile), listOf())
+    /**
+     * Method to handle when peer requests more information about a specific user id
+     */
+    private fun handleRequestEncounter(packet: RequestEncountersPacket) {
+        myCoroutineScope.launch {
+            val myProfileDeferred = async { database.loadMyProfile() }
+            val encountersListDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
+
+            val myProfile = myProfileDeferred.await()
+            val encountersList = encountersListDeferred.await()
+
+
+
+        }
+
+    }
+
+    /**
+     * Method to transmit to peer a list of userIds this client holds
+     */
+    private fun handleRequestEncountersList() {
+        myCoroutineScope.launch {
+            val myProfileDeferred = async { database.loadMyProfile() }
+            val encountersListDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
+
+            val myProfile = myProfileDeferred.await()
+            val encountersList = encountersListDeferred.await()
+
+
+            val listOfIds = mutableListOf<String>()
+
+            if (myProfile != null) {
+                listOfIds.add(myProfile.id)
+            }
+            encountersList.forEach { encounter ->
+                listOfIds.add(encounter.userId)
+            }
+
+            connection.sendPacket(EncountersListPacket(listOfIds), listOf())
+        }
     }
 
     private fun onPacketReceive(combinedPacket: ParsedCombinedPacket) {
         when (combinedPacket.metaPacket) {
-            is RequestProfilePacket -> {
-                handleRequestProfile()
+            is RequestEncountersListPacket -> {
+                handleRequestEncountersList()
+            }
+            is RequestEncountersPacket -> {
+                handleRequestEncounter(combinedPacket.metaPacket)
             }
         }
     }
