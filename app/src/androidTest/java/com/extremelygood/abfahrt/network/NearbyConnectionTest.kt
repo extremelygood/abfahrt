@@ -33,7 +33,7 @@ class NearbyConnectionTest {
 
     @Test
     fun testSendPacket() {
-        val myDataPacket = ProfilePacket(UserProfile())
+        val myDataPacket = RequestEncountersPacket(listOf("A", "B"))
 
         nearbyConnection.sendPacket(myDataPacket, listOf())
 
@@ -45,14 +45,10 @@ class NearbyConnectionTest {
                 withArg { payload ->
                     assertEquals(Payload.Type.BYTES, payload.type)
                     val containedPacket = PacketFormat.decodeFromString<BaseDataPacket>(String(payload.asBytes()!!, Charsets.UTF_8))
-                    assertTrue(containedPacket is ProfilePacket)
+                    assertTrue(containedPacket is RequestEncountersPacket)
 
-                    val profilePacket = containedPacket as ProfilePacket
-                    assertEquals(myDataPacket.profile.id,profilePacket.profile.id)
-                    assertEquals(myDataPacket.profile.age, profilePacket.profile.age)
-                    assertEquals(myDataPacket.profile.firstName, profilePacket.profile.firstName)
-                    assertEquals(myDataPacket.profile.lastName, profilePacket.profile.lastName)
-                    assertEquals(myDataPacket.profile.description, profilePacket.profile.description)
+                    val profilePacket = containedPacket as RequestEncountersPacket
+                    assertEquals(myDataPacket.profileIdsList, profilePacket.profileIdsList)
                 })
         }
     }
@@ -61,7 +57,7 @@ class NearbyConnectionTest {
     @Test
     fun testReceivePacket() {
 
-        val myPacket = RequestProfilePacket()
+        val myPacket = RequestEncountersListPacket()
 
         val mockCallback = mockk<(ParsedCombinedPacket) -> Unit>(relaxed = true)
         nearbyConnection.setPacketReceiveCallback(mockCallback)
@@ -70,7 +66,7 @@ class NearbyConnectionTest {
 
         verify(exactly = 1) {
             mockCallback.invoke(withArg { combinedPacket ->
-                assertTrue(combinedPacket.metaPacket is RequestProfilePacket)
+                assertTrue(combinedPacket.metaPacket is RequestEncountersListPacket)
             })
         }
 
@@ -78,7 +74,7 @@ class NearbyConnectionTest {
 
     @Test
     fun testReceiveDataPacketAndFiles() {
-        val myPacket = RequestProfilePacket()
+        val myPacket = RequestEncountersListPacket()
         val filePayload1 = getFakeFilePayload()
         val filePayload2 = getFakeFilePayload()
         val fakeFile1 = filePayload1.asFile()!!.asUri()!!.toFile()
@@ -107,7 +103,7 @@ class NearbyConnectionTest {
 
         verify(exactly = 1) {
             mockCallback.invoke(withArg { combinedPacket ->
-                assertTrue(combinedPacket.metaPacket is RequestProfilePacket)
+                assertTrue(combinedPacket.metaPacket is RequestEncountersListPacket)
                 assertTrue(combinedPacket.files[filePayload1.id] != null)
                 assertTrue(combinedPacket.files[filePayload2.id] != null)
 
@@ -126,7 +122,7 @@ class NearbyConnectionTest {
 
     @Test
     fun testReceiveFilesAndDataPacket() {
-        val myPacket = RequestProfilePacket()
+        val myPacket = RequestEncountersListPacket()
         val filePayload1 = getFakeFilePayload()
         val filePayload2 = getFakeFilePayload()
         val fakeFile1 = filePayload1.asFile()!!.asUri()!!.toFile()
@@ -155,7 +151,7 @@ class NearbyConnectionTest {
 
         verify(exactly = 1) {
             mockCallback.invoke(withArg { combinedPacket ->
-                assertTrue(combinedPacket.metaPacket is RequestProfilePacket)
+                assertTrue(combinedPacket.metaPacket is RequestEncountersListPacket)
                 assertTrue(combinedPacket.files[filePayload1.id] != null)
                 assertTrue(combinedPacket.files[filePayload2.id] != null)
 
@@ -174,7 +170,7 @@ class NearbyConnectionTest {
 
     @Test
     fun testDataPacketExpire() {
-        val myPacket = RequestProfilePacket()
+        val myPacket = RequestEncountersListPacket()
         myPacket.associatedFileIds = mutableListOf<Long>(5, 9) // Will infinitely wait for non existant files
 
         payloadCallback.onPayloadReceived(ENDPOINT_ID, transformPacketToPayload(myPacket))
