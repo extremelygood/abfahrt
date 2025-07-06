@@ -2,8 +2,6 @@ package com.extremelygood.abfahrt.network
 
 import Expiring
 import ExpiringDelegate
-import com.extremelygood.abfahrt.network.packets.BaseDataPacket
-import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
 import kotlin.time.Duration
