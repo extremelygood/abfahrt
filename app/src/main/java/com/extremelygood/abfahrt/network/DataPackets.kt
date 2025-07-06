@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.network.packets
+package com.extremelygood.abfahrt.network
 
 import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.nearby.connection.Payload.File
@@ -14,6 +14,7 @@ val module = SerializersModule {
         subclass(HeartbeatPacket::class)
         subclass(ProfilePacket::class)
         subclass(RequestProfilePacket::class)
+        subclass(RequestImagePacket::class)
     }
 }
 
@@ -39,9 +40,16 @@ class HeartbeatPacket : BaseDataPacket()
 @SerialName("PROFILE")
 class ProfilePacket(val profile: UserProfile) : BaseDataPacket()
 
+@Serializable
+@SerialName("IMAGE")
+class ImagePacket(val imageType: String)
 
 // Requests
 
 @Serializable
 @SerialName("REQUEST_PROFILE")
 class RequestProfilePacket() : BaseDataPacket()
+
+@Serializable
+@SerialName("REQUEST_IMAGE")
+class RequestImagePacket(val userId: String, val imageType: String) : BaseDataPacket()
