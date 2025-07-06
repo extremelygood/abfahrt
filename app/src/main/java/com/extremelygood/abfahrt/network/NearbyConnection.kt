@@ -1,8 +1,5 @@
 package com.extremelygood.abfahrt.network
 
-import com.extremelygood.abfahrt.network.packets.BaseDataPacket
-import com.extremelygood.abfahrt.network.packets.PacketFormat
-import com.extremelygood.abfahrt.network.packets.ParsedCombinedPacket
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
