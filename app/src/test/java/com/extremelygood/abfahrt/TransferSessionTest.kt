@@ -2,7 +2,7 @@ package com.extremelygood.abfahrt
 
 import com.extremelygood.abfahrt.network.ImageTransferSession
 import com.extremelygood.abfahrt.network.DataPacketTransferSession
-import com.extremelygood.abfahrt.network.packets.BaseDataPacket
+import com.extremelygood.abfahrt.network.BaseDataPacket
 import com.google.android.gms.nearby.connection.Payload
 import io.mockk.every
 import io.mockk.mockk
