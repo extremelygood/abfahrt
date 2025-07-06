@@ -29,6 +29,12 @@ class DatabaseManager private constructor(context: Context) {
         }
     }
 
+    suspend fun getAllMatches(limit: Int): List<MatchProfile> {
+        return withContext(Dispatchers.IO) {
+            matchProfileDao.getAll(limit)
+        }
+    }
+
     suspend fun clearMatches() {
         withContext(Dispatchers.IO) {
             matchProfileDao.clear()
