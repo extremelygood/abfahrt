@@ -48,13 +48,7 @@ class EncounterHandler(
 
         mainJob = myCoroutineScope.launch {
 
-
-
-            val encountersDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
-            val profileDeferred = async { database.loadMyProfile() }
-
-            val encountersList = encountersDeferred.await()
-            val ownProfile = profileDeferred.await()
+            connection.sendPacket(RequestEncountersListPacket(), listOf())
 
         }
     }
@@ -64,6 +58,62 @@ class EncounterHandler(
         mainJob?.cancel()
     }
 
+
+    private fun handleEncounterReceive(packet: EncounterPacket) {
+        myCoroutineScope.launch {
+            val encounterProfile = packet.encounter.userProfile
+            val existingProfile = database.getMatchProfile(encounterProfile.id)
+
+
+            // Cases where you want to discard packet
+
+
+            if (existingProfile != null) {
+                return@launch
+            }
+
+
+            // All checks complete, save this profile
+
+            val newMatchProfile = MatchProfile(
+                encounterProfile.id,
+                encounterProfile.firstName,
+                encounterProfile.lastName,
+                encounterProfile.age,
+                encounterProfile.description,
+                encounterProfile.isDriver,
+                encounterProfile.destination
+            )
+
+            database.saveMatchProfile(newMatchProfile)
+        }
+    }
+
+    private fun handleEncounterListReceive(packet: EncountersListPacket) {
+        // Select which encounters this client is interested in and optionally send a reply with
+        // ids
+        myCoroutineScope.launch {
+            val interestedIds = mutableListOf<String>()
+
+            packet.profileIdslist.forEach { id ->
+                val existingProfile = database.getMatchProfile(id)
+
+                // Does not exist locally case, we want this definitely
+                if (existingProfile == null) {
+                    interestedIds.add(id)
+                }
+            }
+
+            if (interestedIds.isNotEmpty()) {
+                connection.sendPacket(RequestEncountersPacket(interestedIds), listOf())
+            }
+
+        }
+    }
+
+    private fun handleImageReceive(combinedPacket: ParsedCombinedPacket) {
+
+    }
 
     /**
      * Method to handle when peer requests more information about a specific user id
