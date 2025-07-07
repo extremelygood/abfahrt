@@ -165,6 +165,12 @@ class EncounterHandler(
             is RequestEncountersPacket -> {
                 handleRequestEncounter(combinedPacket.metaPacket)
             }
+            is EncountersListPacket -> {
+                handleEncounterListReceive(combinedPacket.metaPacket)
+            }
+            is EncounterPacket -> {
+                handleEncounterReceive(combinedPacket.metaPacket)
+            }
         }
     }
 
