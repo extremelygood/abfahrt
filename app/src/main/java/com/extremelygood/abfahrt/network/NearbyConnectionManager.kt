@@ -7,6 +7,7 @@ import com.google.android.gms.nearby.connection.ConnectionInfo
 import com.google.android.gms.nearby.connection.ConnectionLifecycleCallback
 import com.google.android.gms.nearby.connection.ConnectionResolution
 import com.google.android.gms.nearby.connection.ConnectionsClient
+import com.google.android.gms.nearby.connection.ConnectionsStatusCodes
 import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
@@ -90,18 +91,18 @@ class NearbyConnectionManager(
             override fun onConnectionResult(endpointId: String, connectionResolution: ConnectionResolution) {
                 when {
                     connectionResolution.status.isSuccess -> {
-                        // Do nothing, connection already exists
+
+                        // Further check the status code
+                        if (connectionResolution.status.statusCode != ConnectionsStatusCodes.STATUS_OK) {
+                            destroyNearbyConnection(endpointId)
+                        }
+
                     }
-                    connectionResolution.status.isCanceled -> {
-                        // Destroy the connection
+                    else -> {
                         destroyNearbyConnection(endpointId)
-                    }
-                    connectionResolution.status.isInterrupted -> {
-                        // I don't know what this case does. Research this
-                        destroyNearbyConnection(endpointId)
-                        TODO("Check what this does")
                     }
                 }
+
             }
 
             override fun onDisconnected(endpointId: String) {
