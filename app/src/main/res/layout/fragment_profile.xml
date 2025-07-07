@@ -201,17 +201,18 @@
                         />
 
                     <com.google.android.gms.maps.MapView
-                        android:layout_marginTop="50dp"
-                        android:layout_marginHorizontal="15dp"
-                        android:layout_marginBottom="15dp"
+                        android:id="@+id/mapView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginHorizontal="15dp"
+                        android:layout_marginTop="50dp"
+                        android:visibility="visible"
 
-                        app:layout_constraintStart_toStartOf="@id/mapFieldContainer"
+                        android:layout_marginBottom="15dp"
                         app:layout_constraintEnd_toEndOf="@id/mapFieldContainer"
-                        app:layout_constraintTop_toTopOf="@id/mapFieldContainer"
+                        app:layout_constraintStart_toStartOf="@id/mapFieldContainer"
 
-                        />
+                        app:layout_constraintTop_toTopOf="@id/mapFieldContainer" />
 
                     <TextView
                         android:id="@+id/mapRequired"

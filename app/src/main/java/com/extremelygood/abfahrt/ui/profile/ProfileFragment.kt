@@ -13,6 +13,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
+import com.google.android.gms.maps.CameraUpdate
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
 
 class ProfileFragment : Fragment() {
 
@@ -28,6 +31,7 @@ class ProfileFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         imagePicker = ImagePicker(requireContext(), this, ::profileImageSelected)
+
     }
 
     override fun onCreateView(
@@ -39,6 +43,9 @@ class ProfileFragment : Fragment() {
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+
+        binding.mapView.onCreate(savedInstanceState)
 
         return root
     }
@@ -77,6 +84,13 @@ class ProfileFragment : Fragment() {
             entry.key.addTextChangedListener(textWatcher)
         }
 
+        binding.mapView.getMapAsync { googleMap ->
+            val defaultlatLng = LatLng(52.520008, 13.404954)
+            val defaultZoomLvl = 12f
+
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultlatLng, defaultZoomLvl))
+        }
+
     }
 
 
@@ -107,6 +121,9 @@ class ProfileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
+        binding.mapView.onDestroy()
+
         _binding = null
     }
 }
