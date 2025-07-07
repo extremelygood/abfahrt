@@ -89,10 +89,16 @@ class ProfileFragment : Fragment() {
             val defaultZoomLvl = 12f
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultlatLng, defaultZoomLvl))
+            googleMap.setOnMapClickListener { latLng ->
+                destinationSelected(latLng)
+            }
         }
 
     }
 
+    private fun destinationSelected(latLng: LatLng) {
+        Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show()
+    }
 
     private fun profilePictureClicked() {
         imagePicker.startPickImage()

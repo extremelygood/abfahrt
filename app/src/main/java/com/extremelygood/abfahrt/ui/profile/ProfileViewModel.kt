@@ -1,9 +1,11 @@
 package com.extremelygood.abfahrt.ui.profile
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
 
 class ProfileViewModel : ViewModel() {
 
@@ -12,6 +14,9 @@ class ProfileViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
+    fun onDestinationSelected(latLng: LatLng) {
+
+    }
 
     fun onProfileImageSelected(uri: Uri?) {
 
