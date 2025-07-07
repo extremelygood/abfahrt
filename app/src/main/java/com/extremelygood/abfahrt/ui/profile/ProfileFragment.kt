@@ -85,16 +85,35 @@ class ProfileFragment : Fragment() {
         }
 
         binding.mapView.getMapAsync { googleMap ->
-            val defaultlatLng = LatLng(52.520008, 13.404954)
-            val defaultZoomLvl = 12f
+            val defaultLatLng = LatLng(52.520008, 13.404954)
+            val defaultZoomLvl = 8f
 
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultlatLng, defaultZoomLvl))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoomLvl))
             googleMap.setOnMapClickListener { latLng ->
                 destinationSelected(latLng)
             }
         }
 
+        initViewModelBindings()
+
     }
+
+    private fun initViewModelBindings() {
+        profileViewModel.profilePicture.observe(viewLifecycleOwner) { newUri ->
+            setProfilePicture(newUri)
+        }
+    }
+
+    private fun setProfilePicture(newUri: Uri?) {
+        binding.profilePictureButton.setImageURI(newUri)
+    }
+
+
+
+
+
+
+    // Input bindings
 
     private fun destinationSelected(latLng: LatLng) {
         Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show()

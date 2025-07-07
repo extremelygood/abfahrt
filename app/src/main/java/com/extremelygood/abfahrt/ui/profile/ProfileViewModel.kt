@@ -1,7 +1,6 @@
 package com.extremelygood.abfahrt.ui.profile
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,28 +13,60 @@ class ProfileViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
-    fun onDestinationSelected(latLng: LatLng) {
+    private val _profilePicture = MutableLiveData<Uri>().apply {
 
+    }
+    val profilePicture: LiveData<Uri> = _profilePicture
+
+    private val _firstName = MutableLiveData<String>().apply {
+        value = "Init"
+    }
+    val firstName: LiveData<String> = _firstName
+
+    private val _lastName = MutableLiveData<String>().apply {
+        value = "Init"
+    }
+    val lastName: LiveData<String> = _lastName
+
+    private val _age = MutableLiveData<String>().apply {
+        value = "Init"
+    }
+    val age: LiveData<String> = _age
+
+    private val _description = MutableLiveData<String>().apply {
+        value = "Init"
+    }
+    val description: LiveData<String> = _description
+
+    private val _destination = MutableLiveData<LatLng>().apply {
+
+    }
+    val destination: LiveData<LatLng> = _destination
+
+
+
+    fun onDestinationSelected(latLng: LatLng) {
+        _destination.value = (latLng)
     }
 
     fun onProfileImageSelected(uri: Uri?) {
-
+        _profilePicture.value = uri
     }
 
     fun onFirstNameSelected(newFirstName: CharSequence?) {
-
+        _firstName.value = newFirstName.toString()
     }
 
     fun onLastNameSelected(newLastName: CharSequence?) {
-
+        _lastName.value = newLastName.toString()
     }
 
     fun onAgeSelected(newAge: CharSequence?) {
-
+        _age.value = newAge.toString()
     }
 
     fun onDescriptionSelected(newDescription: CharSequence?) {
-
+        _description.value = newDescription.toString()
     }
 
 }
