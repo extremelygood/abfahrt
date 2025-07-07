@@ -217,8 +217,9 @@
 
                             style="@style/TextField"
 
-                            android:inputType="textShortMessage"
-                            android:hint="Latitude"
+                            android:inputType="numberDecimal"
+                            android:digits="0123456789."
+                            android:hint="@string/latitude_hint"
 
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -240,8 +241,9 @@
 
                             style="@style/TextField"
 
-                            android:inputType="textShortMessage"
-                            android:hint="Longitude"
+                            android:inputType="numberDecimal"
+                            android:digits="0123456789."
+                            android:hint="@string/longitude_hint"
 
                             android:layout_width="0dp"
                             android:layout_height="match_parent"

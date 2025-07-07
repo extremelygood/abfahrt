@@ -13,4 +13,6 @@
     <string name="description_hint">Description</string>
     <string name="map_hint">Where do you want to go?</string>
     <string name="required_hint">Required</string>
+    <string name="latitude_hint">Latitude</string>
+    <string name="longitude_hint">Longitude</string>
 </resources>
