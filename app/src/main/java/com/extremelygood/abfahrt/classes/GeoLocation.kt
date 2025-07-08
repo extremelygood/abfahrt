@@ -3,9 +3,11 @@ package com.extremelygood.abfahrt.classes
 import android.location.Location
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
@@ -29,18 +31,25 @@ object AndroidLocationSerializer : KSerializer<Location> {
 
 
     override fun deserialize(decoder: Decoder): Location {
-        val struct = decoder.beginStructure(descriptor)
+        val dec = decoder.beginStructure(descriptor)
 
-        val lat = struct.decodeDoubleElement(descriptor, 0)
-        val lon = struct.decodeDoubleElement(descriptor, 1)
+        var lat = 0.0
+        var lon = 0.0
 
-        struct.endStructure(descriptor)
+        loop@ while (true) {
+            when (val index = dec.decodeElementIndex(descriptor)) {
+                CompositeDecoder.DECODE_DONE -> break@loop
+                0 -> lat = dec.decodeDoubleElement(descriptor, 0)
+                1 -> lon = dec.decodeDoubleElement(descriptor, 1)
+                else -> throw SerializationException("Unexpected index $index")
+            }
+        }
+        dec.endStructure(descriptor)
 
-        val newLocation = Location(null)
-        newLocation.latitude = lat
-        newLocation.longitude = lon
-
-        return newLocation
+        return Location("").apply {
+            latitude = lat
+            longitude = lon
+        }
     }
 
     override fun serialize(encoder: Encoder, value: Location) {
