@@ -1,3 +1,5 @@
+package com.extremelygood.abfahrt.classes
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

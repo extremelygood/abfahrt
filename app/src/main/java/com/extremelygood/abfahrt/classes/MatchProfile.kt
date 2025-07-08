@@ -1,3 +1,6 @@
+package com.extremelygood.abfahrt.classes
+
+
 import androidx.room.*
 import androidx.room.PrimaryKey
 import com.extremelygood.abfahrt.classes.GeoLocation
@@ -11,5 +14,8 @@ data class MatchProfile(
     val age: Int,
     val description: String,
     val isDriver: Boolean,
-    @Embedded val destination: GeoLocation
+    @Embedded val destination: GeoLocation,
+
+    @ColumnInfo(defaultValue = "0")
+    val firstSeenAt: Long = System.currentTimeMillis()
 )
