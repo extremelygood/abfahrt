@@ -1,6 +1,5 @@
 package com.extremelygood.abfahrt
 
-import com.extremelygood.abfahrt.classes.UserProfile
 import com.extremelygood.abfahrt.network.BaseDataPacket
 import com.extremelygood.abfahrt.network.PacketFormat
 import com.extremelygood.abfahrt.network.RequestEncountersPacket
