@@ -1,307 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- res/layout/fragment_profile.xml -->
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profileScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="vertical"
     tools:context=".ui.profile.ProfileFragment">
 
-    <ScrollView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintDimensionRatio="w,1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.376">
+    <!-- One child only → a vertical LinearLayout that stacks the sections -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- ──────────────── profile picture ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_height="wrap_content">
 
-            <!-- the profile picture -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/profilePictureButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/activity_horizontal_margin"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/default_profile_picture"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.4" />
 
-                <ImageButton
-                    android:id="@+id/profilePictureButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_margin="@dimen/activity_horizontal_margin"
-                    android:background="@android:color/transparent"
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/default_profile_picture"
+        <!-- ──────────────── first name ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    app:layout_constraintDimensionRatio="1:1"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_percent="0.4" />
+            <EditText
+                android:id="@+id/firstNameText"
+                style="@style/TextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="username"
+                android:hint="@string/first_name_hint"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/firstNameRequired"
+                style="@style/BaseTextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginEnd="10dp"
+                android:text="@string/required_hint"
+                android:textColor="@color/red"
+                app:layout_constraintEnd_toEndOf="@id/firstNameText"
+                app:layout_constraintTop_toTopOf="@id/firstNameText" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- first_name text field -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+        <!-- ──────────────── last name ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <EditText
+                android:id="@+id/lastNameText"
+                style="@style/TextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="name"
+                android:hint="@string/last_name_hint"
+                android:inputType="textPersonName"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <EditText
-                    android:id="@+id/firstNameText"
+        <!-- ──────────────── age ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    style="@style/TextField"
+            <EditText
+                android:id="@+id/ageField"
+                style="@style/TextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:digits="0123456789"
+                android:hint="@string/age_hint"
+                android:inputType="number"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    android:inputType="text|textPersonName"
-                    android:hint="@string/first_name_hint"
-                    android:autofillHints="username"
+        <!-- ──────────────── description ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_constraintWidth_percent="0.8"
+            <EditText
+                android:id="@+id/descriptionField"
+                style="@style/TextField"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start|top"
+                android:hint="@string/description_hint"
+                android:inputType="textMultiLine"
+                android:minHeight="80dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- ──────────────── map / lat-lng ──────────────── -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <FrameLayout
+                android:id="@+id/mapFieldContainer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8">
 
                 <TextView
-                    android:id="@+id/firstNameRequired"
+                    android:id="@+id/mapBackground"
+                    style="@style/TextField"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start|top"
+                    android:hint="@string/map_hint" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/latitudeField"
+                        style="@style/TextField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:digits="0123456789."
+                        android:hint="@string/latitude_hint"
+                        android:inputType="numberDecimal" />
+
+                    <Space
+                        android:layout_width="15dp"
+                        android:layout_height="wrap_content" />
+
+                    <EditText
+                        android:id="@+id/longitudeField"
+                        style="@style/TextField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:layout_weight="1"
+                        android:digits="0123456789."
+                        android:hint="@string/longitude_hint"
+                        android:inputType="numberDecimal" />
+                </LinearLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:layout_marginHorizontal="11dp"
+                    android:layout_marginTop="110dp"
+                    android:layout_marginBottom="15dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="4dp">
+
+                    <com.extremelygood.abfahrt.ui.NonInterceptingMapView
+                        android:id="@+id/mapView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:id="@+id/mapRequired"
                     style="@style/BaseTextAppearance"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12.5dp"
+                    android:layout_gravity="end|top"
+                    android:layout_marginTop="21dp"
                     android:layout_marginEnd="10dp"
-
                     android:text="@string/required_hint"
-                    android:textColor="@color/red"
-                    app:layout_constraintEnd_toEndOf="@id/firstNameText"
-                    app:layout_constraintTop_toTopOf="@id/firstNameText" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- last_name text field -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-                <EditText
-                    android:id="@+id/lastNameText"
-
-                    style="@style/TextField"
-
-                    android:inputType="text|textPersonName"
-                    android:hint="@string/last_name_hint"
-                    android:autofillHints="name"
-
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_constraintWidth_percent="0.8"
-
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- age field -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-                <EditText
-                    android:id="@+id/ageField"
-
-                    style="@style/TextField"
-
-                    android:inputType="number"
-                    android:hint="@string/age_hint"
-                    android:digits="0123456789"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    app:layout_constraintWidth_percent="0.8"
-
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- description field -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-                <EditText
-                    android:id="@+id/descriptionField"
-
-                    style="@style/TextField"
-
-                    android:inputType="textMultiLine"
-                    android:hint="@string/description_hint"
-
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:minHeight="80dp"
-
-                    app:layout_constraintWidth_percent="0.8"
-                    android:gravity="start|top"
-
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-
-                />
-
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- map field -->
-            <androidx.constraintlayout.widget.ConstraintLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <FrameLayout
-                    android:id="@+id/mapFieldContainer"
-                    android:layout_width="0dp"
-                    android:layout_height="400dp"
-                    app:layout_constraintWidth_percent="0.8"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/mapBackground"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-
-                        android:hint="@string/map_hint"
-                        android:gravity="start|top"
-
-                        style="@style/TextField"
-
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:padding="0dp"
-                        android:gravity="center_vertical"
-                        >
-
-                        <EditText
-                            android:layout_marginBottom="5dp"
-                            android:id="@+id/latitudeField"
-
-                            style="@style/TextField"
-
-                            android:inputType="numberDecimal"
-                            android:digits="0123456789."
-                            android:hint="@string/latitude_hint"
-
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-
-
-
-                            android:gravity="start|top"
-
-                            />
-
-                        <Space
-                            android:layout_width="15dp"
-                            android:layout_height="match_parent"/>
-
-                        <EditText
-                            android:layout_marginBottom="5dp"
-                            android:id="@+id/longitudeField"
-
-                            style="@style/TextField"
-
-                            android:inputType="numberDecimal"
-                            android:digits="0123456789."
-                            android:hint="@string/longitude_hint"
-
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-
-
-
-                            android:gravity="start|top"
-
-                            />
-
-                    </LinearLayout>
-
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="11dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_marginTop="110dp"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
-
-                        <com.google.android.gms.maps.MapView
-                            android:id="@+id/mapView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-
-
-                            app:layout_constraintEnd_toEndOf="@id/mapFieldContainer"
-                            app:layout_constraintStart_toStartOf="@id/mapFieldContainer"
-
-
-                            app:layout_constraintTop_toTopOf="@id/mapFieldContainer" />
-
-                    </androidx.cardview.widget.CardView>
-
-                    <TextView
-                        android:id="@+id/mapRequired"
-
-                        style="@style/BaseTextAppearance"
-
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="21dp"
-                        android:layout_marginEnd="10dp"
-
-                        android:layout_gravity="end|top"
-
-                        android:text="@string/required_hint"
-                        android:textColor="@color/red"
-                         />
-
-
-                </FrameLayout>
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-    </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textColor="@color/red" />
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Some space at the bottom -->
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
