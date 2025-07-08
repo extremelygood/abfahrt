@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.network
 
+import android.util.Log
 import com.extremelygood.abfahrt.classes.MatchProfile
 import com.extremelygood.abfahrt.classes.DatabaseManager
 import com.extremelygood.abfahrt.classes.UserProfile
@@ -48,7 +49,7 @@ class EncounterHandler(
         end()
 
         mainJob = myCoroutineScope.launch {
-
+            Log.d("EnounterHandler", "Start - Sending request list packet")
             connection.sendPacket(RequestEncountersListPacket(), listOf())
 
         }
@@ -94,6 +95,7 @@ class EncounterHandler(
         // Select which encounters this client is interested in and optionally send a reply with
         // ids
         myCoroutineScope.launch {
+            Log.d("EncounterHandler", "Got encounters list: " + packet.profileIdslist)
             val interestedIds = mutableListOf<String>()
 
             packet.profileIdslist.forEach { id ->
@@ -201,6 +203,7 @@ class EncounterHandler(
     }
 
     private fun onPacketReceive(combinedPacket: ParsedCombinedPacket) {
+        Log.d("EncounterHandler", "Got combined packet, going into switch case")
         when (combinedPacket.metaPacket) {
             is RequestEncountersListPacket -> {
                 handleRequestEncountersList()
