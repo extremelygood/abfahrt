@@ -1,9 +1,10 @@
 package com.extremelygood.abfahrt.classes
 
-import MatchProfile
+import com.extremelygood.abfahrt.classes.MatchProfile
 import android.content.Context
-import com.extremelygood.abfahrt.classes.database.AppDatabase
+import com.extremelygood.abfahrt.database.AppDatabase
 import androidx.room.*
+import com.extremelygood.abfahrt.database.MIGRATION_1_2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -12,7 +13,8 @@ class DatabaseManager private constructor(context: Context) {
         context.applicationContext,
         AppDatabase::class.java,
         "abfahrt.db"
-    ).build()
+    ).addMigrations(MIGRATION_1_2)
+        .build()
 
     private val matchProfileDao = db.matchProfileDao()
     private val userProfileDao = db.userProfileDao()
@@ -25,8 +27,8 @@ class DatabaseManager private constructor(context: Context) {
 
     suspend fun getMatchProfile(userId: String): MatchProfile? {
         return withContext(Dispatchers.IO) {
-            matchProfileDao.getById(userId)
-        }
+                matchProfileDao.getById(userId)
+            }
     }
 
     suspend fun getAllMatches(limit: Int): List<MatchProfile> {

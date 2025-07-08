@@ -1,17 +1,13 @@
 package com.extremelygood.abfahrt.network
 
-import Expiring
-import ExpiringDelegate
+import com.extremelygood.abfahrt.classes.Expiring
+import com.extremelygood.abfahrt.classes.ExpiringDelegate
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.Payload.File
 import kotlin.time.Duration
 
-
 typealias onFailCallback = () -> Unit
 typealias onFinishedCallback = (wrappedPacket: ParsedCombinedPacket) -> Unit
-
-
-
 
 /**
  * Class to allow for aggregating files to a dataPacket

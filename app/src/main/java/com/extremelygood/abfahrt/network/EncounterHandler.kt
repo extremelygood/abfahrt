@@ -1,6 +1,6 @@
 package com.extremelygood.abfahrt.network
 
-import MatchProfile
+import com.extremelygood.abfahrt.classes.MatchProfile
 import com.extremelygood.abfahrt.classes.DatabaseManager
 import com.extremelygood.abfahrt.classes.UserProfile
 import kotlinx.coroutines.CoroutineScope

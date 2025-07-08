@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.classes.database
+package com.extremelygood.abfahrt.database
 
 import androidx.room.Dao
 import androidx.room.Insert

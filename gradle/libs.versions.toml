@@ -1,6 +1,6 @@
 [versions]
 agp = "8.10.1"
-kotlin = "2.0.21"
+kotlin = "2.0.20"
 coreKtx = "1.16.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -20,6 +20,8 @@ serialization = "1.8.1"
 mockk = "1.14.4"
 roomCommonJvm = "2.7.2"
 roomRuntimeAndroid = "2.7.2"
+ksp = "2.0.20-1.0.24"
+room = "2.6.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,9 +44,17 @@ play-services-nearby = { group = "com.google.android.gms", name = "play-services
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization"}
 androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
+ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+
+
+androidx-room-ktx       = { module = "androidx.room:room-ktx",       version = "2.6.1" }
+androidx-room-compiler  = { module = "androidx.room:room-compiler",  version = "2.6.1" }
+androidx-room-testing   = { module = "androidx.room:room-testing",   version = "2.6.1" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinx-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
