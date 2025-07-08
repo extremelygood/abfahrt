@@ -41,6 +41,9 @@ class MainActivity : AppCompatActivity() {
             resultMap.forEach { (permissionName, isAllowed) ->
                 Log.d("RuntimePermissions", "Permission $permissionName is allowed? $isAllowed")
             }
+
+            (application as AbfahrtApplication).tryStartConnectionManager()
+
         }
 
         val permissionsChecker: RuntimePermissionsChecker = RuntimePermissionsChecker(this, this, arrayOf(
