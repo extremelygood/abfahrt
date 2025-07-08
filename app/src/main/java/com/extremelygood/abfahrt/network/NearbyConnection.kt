@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.network
 
+import android.util.Log
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
@@ -58,6 +59,7 @@ class NearbyConnection(
     fun getPayloadCallback(): PayloadCallback {
         val newCallbackObj = object: PayloadCallback() {
             override fun onPayloadReceived(endpointId: String, payload: Payload) {
+                Log.d("NearbyConnection", "Got payload receive")
                 onPayloadReceived(payload)
             }
 
@@ -87,6 +89,7 @@ class NearbyConnection(
 
         val packetPayload = Payload.fromBytes(PacketFormat.encodeToString(packet).toByteArray())
 
+        Log.d("NearbyConnection", "Sending byte payload")
 
         connectionManager.sendPayload(endpointId, packetPayload)
 
@@ -97,6 +100,7 @@ class NearbyConnection(
 
 
     private fun onPayloadReceived(payload: Payload) {
+        Log.d("NearbyConnection", "Got raw payload")
 
         // Small service method to assign an imageTransferSession to a living DataPacketSession
         fun offerToHost(imageSession: ImageTransferSession) {
