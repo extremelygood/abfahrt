@@ -13,7 +13,6 @@ import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 import com.google.android.gms.nearby.connection.Payload
 
-const val APP_IDENTIFIER: String = "com.abfahrt"
 const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
 
 /**
@@ -45,7 +44,7 @@ class NearbyConnectionManager(
         val advertisingOptions: AdvertisingOptions = optionsBuilder.build()
 
 
-        val advertisement = connectionsClient.startAdvertising(TEST_TRANSMITTER_NAME, APP_IDENTIFIER, newLifecycleCallback(), advertisingOptions)
+        val advertisement = connectionsClient.startAdvertising(TEST_TRANSMITTER_NAME, channelName, newLifecycleCallback(), advertisingOptions)
     }
 
     /**
@@ -55,7 +54,7 @@ class NearbyConnectionManager(
         val optionsBuilder: DiscoveryOptions.Builder = DiscoveryOptions.Builder();
         val discoveryOptions: DiscoveryOptions = optionsBuilder.build();
 
-        connectionsClient.startDiscovery(TEST_TRANSMITTER_NAME, newDiscoveryCallback(), discoveryOptions)
+        connectionsClient.startDiscovery(channelName, newDiscoveryCallback(), discoveryOptions)
     }
 
 
