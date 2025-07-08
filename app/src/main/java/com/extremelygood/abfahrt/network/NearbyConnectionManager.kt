@@ -118,8 +118,9 @@ class NearbyConnectionManager(
     private fun newDiscoveryCallback(): EndpointDiscoveryCallback {
         val callback = object: EndpointDiscoveryCallback() {
             override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
-                val connectionObj = connectionEstablished(endpointId)
-                connectionsClient.requestConnection(TEST_TRANSMITTER_NAME, endpointId, newLifecycleCallback())
+                if (!connectionsMap.contains(endpointId)) {
+                    connectionsClient.requestConnection(TEST_TRANSMITTER_NAME, endpointId, newLifecycleCallback())
+                }
             }
 
             override fun onEndpointLost(endpointId: String) {
