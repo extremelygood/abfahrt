@@ -194,7 +194,9 @@ class EncounterHandler(
                 listOfIds.add(encounter.userId)
             }
 
-            connection.sendPacket(EncountersListPacket(listOfIds), listOf())
+            if (encountersList.isNotEmpty()) {
+                connection.sendPacket(EncountersListPacket(listOfIds), listOf())
+            }
         }
     }
 
