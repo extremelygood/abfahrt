@@ -12,6 +12,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.runInterruptible
+import java.util.Date
 
 const val MAX_ENCOUNTERS_TO_GET = 50
 
@@ -126,8 +127,48 @@ class EncounterHandler(
             val myProfile = myProfileDeferred.await()
             val encountersList = encountersListDeferred.await()
 
+            packet.profileIdsList.forEach { requestedId ->
+
+                var intendedProfile: UserProfile? = null
+                var encounterTime: Long? = null
+
+                if (myProfile != null && myProfile.id == requestedId) {
+                    // Our own profile
+                    intendedProfile = myProfile
+                    encounterTime = System.currentTimeMillis()
+                } else {
+                    // Check inside saved matches
+                    for (matchProfile in encountersList) {
+                        if (matchProfile.userId == requestedId) {
+
+                            // Intended match found, wrap this into a user profile object
+                            val toTransmitProfile = UserProfile(
+                                id = matchProfile.userId,
+                                firstName = matchProfile.firstName,
+                                lastName = matchProfile.lastName,
+                                age = matchProfile.age,
+                                description = matchProfile.description,
+                                destination = matchProfile.destination,
+                                isDriver = matchProfile.isDriver
+                            )
+
+                            intendedProfile = toTransmitProfile
+                            encounterTime = matchProfile.firstSeenAt
+
+                            break
+                        }
+                    }
 
 
+                }
+
+                if (intendedProfile != null && encounterTime != null) {
+                    val transmittedEncounter = TransmittedEncounter(intendedProfile, encounterTime)
+
+                    connection.sendPacket(EncounterPacket(transmittedEncounter), listOf())
+                }
+
+            }
         }
 
     }
