@@ -1,6 +1,5 @@
 package com.extremelygood.abfahrt.network
 
-import MatchProfile
 import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.nearby.connection.Payload.File
 import kotlinx.serialization.SerialName

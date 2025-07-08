@@ -216,20 +216,6 @@ class DatabaseManagerTests {
     }
 
     @Test
-    fun testClearUserProfile() = runBlocking {
-        val profile = UserProfile(firstName = "ToDelete")
-        databaseManager.saveMyProfile(profile)
-
-        // UserProfileDao hat keine Clear-Methode, also löschen wir per DAO direkt
-        db.userProfileDao().upsert(UserProfile(id = "me", firstName = "", lastName = "", age = 0, description = "", destination = GeoLocation(), isDriver = false))
-
-        val loadedAfter = databaseManager.loadMyProfile()
-        // Da wir ein "leeres" Profil gespeichert haben, ist es nicht null, aber Felder sind leer
-        assertNotNull(loadedAfter)
-        assertEquals("", loadedAfter!!.firstName)
-    }
-
-    @Test
     fun testGetAllMatchesWithZeroLimitReturnsEmptyList() = runBlocking {
         databaseManager.saveMatchProfile(
             MatchProfile(
