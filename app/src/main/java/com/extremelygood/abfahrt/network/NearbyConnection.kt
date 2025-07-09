@@ -1,9 +1,13 @@
 package com.extremelygood.abfahrt.network
 
 import android.util.Log
+import com.extremelygood.abfahrt.AbfahrtApplication
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -11,6 +15,7 @@ typealias DisconnectCallback = () -> Unit
 typealias PacketReceiveCallback = (packet: ParsedCombinedPacket) -> Unit
 
 val DEFAULT_EXPIRE_TIME: Duration = 60.seconds
+const val PING_DELAY_MILLIS = 1000L
 
 /**
  * Class that represents an actual connection to a device
@@ -20,12 +25,16 @@ class NearbyConnection(
     private val endpointId: CharSequence,
     private val sessionExpireTime: Duration = DEFAULT_EXPIRE_TIME,
 ) {
+    private var peerIsReady = false
+    private var tryHeartbeatJob: Job? = null
+
     /**
      * For associating dataPackets to file payloads
      */
     internal val fileSessions: MutableMap<Long, ImageTransferSession> = mutableMapOf()
     internal val packetSessions: ArrayList<DataPacketTransferSession> = arrayListOf()
 
+    private var onPeerReadyCallback: (() -> Unit)? = null
     private var onDisconnectCallback: DisconnectCallback? = null
     private var onPacketReceiveCallback: PacketReceiveCallback? = null
 
@@ -45,11 +54,20 @@ class NearbyConnection(
         this.onPacketReceiveCallback = callback
     }
 
+    fun setOnReadyCallback(callback: (() -> Unit)) {
+        this.onPeerReadyCallback = callback
+        if (peerIsReady) {
+            callback.invoke()
+        }
+    }
+
+
 
     /**
      * Method to be explicitly used by connection manager to communicate that connection no longer exists
      */
     fun handleDisconnection() {
+        tryHeartbeatJob?.cancel()
         onDisconnectCallback?.invoke()
     }
 
@@ -98,9 +116,24 @@ class NearbyConnection(
         }
     }
 
+    private fun handlePeerReady() {
+        if (!peerIsReady) {
+            peerIsReady = true
+            onPeerReadyCallback?.invoke()
+        }
+    }
+
+    /**
+     * This method is called when peer 'pings' this
+     */
+    private fun handleHeartbeatPacket() {
+        sendPacket(AcknowledgeHeartbeat(), listOf())
+    }
+
 
     private fun onPayloadReceived(payload: Payload) {
         Log.d("NearbyConnection", "Got raw payload")
+        handlePeerReady()
 
         // Small service method to assign an imageTransferSession to a living DataPacketSession
         fun offerToHost(imageSession: ImageTransferSession) {
@@ -122,6 +155,15 @@ class NearbyConnection(
 
                 val json = String(payload.asBytes()!!, Charsets.UTF_8)
                 val dataPacket = PacketFormat.decodeFromString<BaseDataPacket>(json)
+
+                // Early return if this is a heartbeat packet (meant for connection object)
+                if (dataPacket is RequestHeartbeat) {
+                    handleHeartbeatPacket()
+                    return
+                }
+                if (dataPacket is AcknowledgeHeartbeat) {
+                    return // Already handled by "handlePeerReady" at start of this method
+                }
 
                 val packetTransferSession = DataPacketTransferSession(dataPacket, sessionExpireTime)
 
@@ -177,5 +219,19 @@ class NearbyConnection(
             imageSession.fail()
 
         }
+    }
+
+    private fun tryHeartbeatLoop() {
+        connectionManager.getCoroutineScope().launch {
+            while (!peerIsReady) {
+                sendPacket(RequestHeartbeat(), listOf())
+                delay(PING_DELAY_MILLIS)
+            }
+
+        }
+    }
+
+    init {
+        tryHeartbeatLoop()
     }
 }
