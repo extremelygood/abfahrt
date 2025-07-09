@@ -164,6 +164,7 @@ class ProfileFragment : Fragment() {
         if (newLatLng == null) {
             return
         }
+        profileViewModel.onDestinationSelected(newLatLng)
 
         Toast.makeText(requireContext(), newLatLng.toString(), Toast.LENGTH_SHORT).show()
     }
