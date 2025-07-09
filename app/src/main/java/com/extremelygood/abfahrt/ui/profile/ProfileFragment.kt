@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,11 @@ import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
 import com.extremelygood.abfahrt.ui.viewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 
 class ProfileFragment : Fragment() {
 
@@ -26,6 +31,8 @@ class ProfileFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var imagePicker: ImagePicker
+    private var googleMap: GoogleMap? = null
+    private var destinationMarker: Marker? = null
 
     private val profileViewModel: ProfileViewModel by viewModels {
         viewModelFactory {
@@ -37,8 +44,6 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        imagePicker = ImagePicker(requireContext(), this, ::profileImageSelected)
-
     }
 
     override fun onCreateView(
@@ -57,9 +62,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.profilePictureButton.setOnClickListener({
-            profilePictureClicked()
-        })
 
         // Connect all the text input methods to their fields below
         val textMethodMap = mapOf(
@@ -98,6 +100,9 @@ class ProfileFragment : Fragment() {
             googleMap.setOnMapClickListener { latLng ->
                 mapClicked(latLng)
             }
+
+            this.googleMap = googleMap
+            setDestinationMarker(getCurrentLocationInput())
         }
 
         initViewModelBindings()
@@ -105,9 +110,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initViewModelBindings() {
-        profileViewModel.profilePicture.observe(viewLifecycleOwner) { newUri ->
-            setProfilePicture(newUri)
-        }
         ///*
         profileViewModel.userProfile.observe(viewLifecycleOwner) { newProfileState ->
             drawFromProfile(newProfileState)
@@ -132,14 +134,38 @@ class ProfileFragment : Fragment() {
 
         if (!binding.latitudeField.text.contentEquals(profile.destination.location.latitude.toString())) {
             binding.latitudeField.setText(profile.destination.location.latitude.toString())
+            setDestinationMarker(getCurrentLocationInput())
         }
         if (!binding.longitudeField.text.contentEquals(profile.destination.location.longitude.toString())) {
             binding.longitudeField.setText(profile.destination.location.longitude.toString())
+            setDestinationMarker(getCurrentLocationInput())
         }
     }
 
-    private fun setProfilePicture(newUri: Uri?) {
-        binding.profilePictureButton.setImageURI(newUri)
+    private fun setDestinationMarker(latLng: LatLng?) {
+        if (googleMap == null) {
+            return
+        }
+
+        Log.d("ProfileFragment", "1")
+
+        destinationMarker?.remove()
+        destinationMarker = null
+        if (latLng == null) {
+            return
+        }
+
+        Log.d("ProfileFragment", "Placing marker at lat " + latLng.latitude + " and long " + latLng.longitude)
+
+        val options = MarkerOptions()
+        options.position(latLng)
+        options.title("Destination")
+        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+
+        destinationMarker = googleMap!!.addMarker(options)
+
+        val cameraUpdate = CameraUpdateFactory.newLatLng(latLng)
+        googleMap!!.animateCamera(cameraUpdate)
     }
 
     private fun getCurrentLocationInput(): LatLng? {
@@ -167,14 +193,6 @@ class ProfileFragment : Fragment() {
         destinationInput("")
     }
 
-    private fun profilePictureClicked() {
-        imagePicker.startPickImage()
-    }
-
-    private fun profileImageSelected(uri: Uri?) {
-        profileViewModel.onProfileImageSelected(uri)
-    }
-
     private fun firstNameInput(newInput: CharSequence?) {
         profileViewModel.onFirstNameSelected(newInput)
     }
@@ -197,6 +215,7 @@ class ProfileFragment : Fragment() {
             return
         }
         profileViewModel.onDestinationSelected(newLatLng)
+        setDestinationMarker(newLatLng)
 
         Toast.makeText(requireContext(), newLatLng.toString(), Toast.LENGTH_SHORT).show()
     }
