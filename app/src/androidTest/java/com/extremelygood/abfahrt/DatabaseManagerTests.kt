@@ -10,6 +10,8 @@ import android.content.Context
 import android.location.Location
 import com.extremelygood.abfahrt.classes.GeoLocation
 import com.extremelygood.abfahrt.database.AppDatabase
+import com.extremelygood.abfahrt.database.UserProfileDao
+import kotlinx.serialization.json.Json
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
@@ -19,6 +21,8 @@ import java.io.IOException
 class DatabaseManagerTests {
     private lateinit var db: AppDatabase
     private lateinit var databaseManager: DatabaseManager
+    private lateinit var dao: UserProfileDao
+
 
     @Before
     fun createDb() {
@@ -35,6 +39,9 @@ class DatabaseManagerTests {
         val dbField = DatabaseManager::class.java.getDeclaredField("db")
         dbField.isAccessible = true
         dbField.set(databaseManager, db)
+
+        dao = db.userProfileDao()
+
     }
 
     @After
@@ -232,5 +239,44 @@ class DatabaseManagerTests {
         assertTrue(result.isEmpty())
     }
 
+    @Test
+    fun testGeoLocationSerializationAndStorage() = runBlocking {
+        // 1. Testdaten
+        val location = android.location.Location("test").apply {
+            latitude = 52.52
+            longitude = 13.405
+        }
+
+        val geo = GeoLocation(locationName = "Berlin", location = location)
+
+        val user = UserProfile(
+            id = "me",
+            firstName = "Test",
+            lastName = "User",
+            age = 30,
+            description = "Test desc",
+            destination = geo,
+            isDriver = true
+        )
+
+        // 2. In DB speichern
+        dao.upsert(user)
+
+        // 3. Wieder auslesen
+        val fromDb = dao.getProfile("me")
+        requireNotNull(fromDb)
+
+        // 4. Vergleich
+        assertEquals("Berlin", fromDb.destination.locationName)
+        assertEquals(52.52, fromDb.destination.location.latitude, 0.0001)
+        assertEquals(13.405, fromDb.destination.location.longitude, 0.0001)
+
+        // 5. Direkter JSON-Vergleich (optional)
+        val json = Json { encodeDefaults = true }
+        val serialized = json.encodeToString(GeoLocation.serializer(), geo)
+        val expected = """{"locationName":"Berlin","location":{"latitude":52.52,"longitude":13.405}}"""
+
+        assertEquals(expected, serialized)
+    }
 
 }

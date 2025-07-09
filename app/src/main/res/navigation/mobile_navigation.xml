@@ -14,7 +14,7 @@
     <fragment
         android:id="@+id/navigation_match"
         android:name="com.extremelygood.abfahrt.ui.match.MatchFragment"
-        android:label="@string/title_profile"
+        android:label="Match"
         tools:layout="@layout/fragment_match" />
 
 </navigation>

@@ -4,9 +4,16 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.extremelygood.abfahrt.classes.DatabaseManager
+import com.extremelygood.abfahrt.classes.GeoLocation
+import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.maps.model.LatLng
+import kotlinx.coroutines.launch
+import androidx.lifecycle.map
 
 class ProfileViewModel : ViewModel() {
+
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is profile Fragment"
@@ -44,7 +51,6 @@ class ProfileViewModel : ViewModel() {
     val destination: LiveData<LatLng> = _destination
 
 
-
     fun onDestinationSelected(latLng: LatLng) {
         _destination.value = (latLng)
     }
@@ -68,5 +74,4 @@ class ProfileViewModel : ViewModel() {
     fun onDescriptionSelected(newDescription: CharSequence?) {
         _description.value = newDescription.toString()
     }
-
 }

@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.extremelygood.abfahrt.classes.NotificationHandler
 import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 class ProfileFragment : Fragment() {
 
@@ -53,9 +53,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.profilePictureButton.setOnClickListener({
-            profilePictureClicked()
-        })
+
 
         // Connect all the text input methods to their fields below
         val textMethodMap = mapOf(
@@ -99,22 +97,11 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initViewModelBindings() {
-        profileViewModel.profilePicture.observe(viewLifecycleOwner) { newUri ->
-            setProfilePicture(newUri)
-        }
+
     }
-
-    private fun setProfilePicture(newUri: Uri?) {
-        binding.profilePictureButton.setImageURI(newUri)
-    }
-
-
-
-
 
 
     // Input bindings
-
     private fun destinationSelected(latLng: LatLng) {
         Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show()
     }
