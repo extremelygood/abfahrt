@@ -84,10 +84,6 @@ class ProfileViewModel(
         saveNewProfileState()
     }
 
-    fun onProfileImageSelected(uri: Uri?) {
-        _profilePicture.value = uri
-    }
-
     fun onFirstNameSelected(newFirstName: CharSequence? = "") {
         _firstName.value = newFirstName.toString()
 
