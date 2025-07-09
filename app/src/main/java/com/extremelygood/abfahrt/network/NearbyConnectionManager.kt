@@ -12,6 +12,9 @@ import com.google.android.gms.nearby.connection.DiscoveredEndpointInfo
 import com.google.android.gms.nearby.connection.DiscoveryOptions
 import com.google.android.gms.nearby.connection.EndpointDiscoveryCallback
 import com.google.android.gms.nearby.connection.Payload
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.coroutineContext
 
 const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
 
@@ -22,6 +25,8 @@ class NearbyConnectionManager(
     private val context: Context,
     private val channelName: String
 ) {
+    private val connectionScope = CoroutineScope(Dispatchers.Default)
+
     private val connectionsClient: ConnectionsClient = Nearby.getConnectionsClient(context)
     private val connectionsMap: MutableMap<CharSequence, NearbyConnection> = mutableMapOf()
 
@@ -70,6 +75,13 @@ class NearbyConnectionManager(
      */
     fun disconnectFromEndpoint(endpointId: CharSequence) {
         connectionsClient.disconnectFromEndpoint(endpointId.toString())
+    }
+
+    /**
+     * Method to get the scope for coroutines
+     */
+    fun getCoroutineScope(): CoroutineScope {
+        return connectionScope
     }
 
     /**
