@@ -63,6 +63,8 @@ class ProfileFragment : Fragment() {
             binding.lastNameText to ::lastNameInput,
             binding.ageField to ::ageInput,
             binding.descriptionField to ::descriptionInput,
+            binding.latitudeField to ::destinationInput,
+            binding.longitudeField to ::destinationInput,
         )
 
         textMethodMap.forEach { entry ->
@@ -90,7 +92,7 @@ class ProfileFragment : Fragment() {
 
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoomLvl))
             googleMap.setOnMapClickListener { latLng ->
-                destinationSelected(latLng)
+                mapClicked(latLng)
             }
         }
 
@@ -108,15 +110,29 @@ class ProfileFragment : Fragment() {
         binding.profilePictureButton.setImageURI(newUri)
     }
 
+    private fun getCurrentLocationInput(): LatLng? {
 
+        try {
+            val latValue = binding.latitudeField.text.toString().toDouble()
+            val longValue = binding.longitudeField.text.toString().toDouble()
+
+            return LatLng(latValue, longValue)
+        } catch (e: Exception) {
+
+        }
+        return null
+    }
 
 
 
 
     // Input bindings
 
-    private fun destinationSelected(latLng: LatLng) {
-        Toast.makeText(requireContext(), latLng.toString(), Toast.LENGTH_SHORT).show()
+    private fun mapClicked(latLng: LatLng) {
+        binding.latitudeField.setText(latLng.latitude.toString())
+        binding.longitudeField.setText(latLng.longitude.toString())
+
+        destinationInput("")
     }
 
     private fun profilePictureClicked() {
@@ -141,6 +157,15 @@ class ProfileFragment : Fragment() {
 
     private fun descriptionInput(newInput: CharSequence?) {
         profileViewModel.onDescriptionSelected(newInput)
+    }
+
+    private fun destinationInput(_unused: CharSequence?) {
+        val newLatLng = getCurrentLocationInput()
+        if (newLatLng == null) {
+            return
+        }
+
+        Toast.makeText(requireContext(), newLatLng.toString(), Toast.LENGTH_SHORT).show()
     }
 
 
