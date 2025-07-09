@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.extremelygood.abfahrt.AbfahrtApplication
+import com.extremelygood.abfahrt.classes.UserProfile
 import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
 import com.extremelygood.abfahrt.ui.viewModelFactory
@@ -45,13 +46,8 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
-
-
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
 
         binding.mapView.onCreate(savedInstanceState)
 
@@ -111,6 +107,34 @@ class ProfileFragment : Fragment() {
     private fun initViewModelBindings() {
         profileViewModel.profilePicture.observe(viewLifecycleOwner) { newUri ->
             setProfilePicture(newUri)
+        }
+        ///*
+        profileViewModel.userProfile.observe(viewLifecycleOwner) { newProfileState ->
+            drawFromProfile(newProfileState)
+        }
+         //*/
+    }
+
+    private fun drawFromProfile(profile: UserProfile) {
+
+        if (!binding.firstNameText.text.contentEquals(profile.firstName)) {
+            binding.firstNameText.setText(profile.firstName)
+        }
+        if (!binding.lastNameText.text.contentEquals(profile.lastName)) {
+            binding.lastNameText.setText(profile.lastName)
+        }
+        if (!binding.ageField.text.contentEquals(profile.age.toString())) {
+            binding.ageField.setText(profile.age.toString())
+        }
+        if (!binding.descriptionField.text.contentEquals(profile.description)) {
+            binding.descriptionField.setText(profile.description)
+        }
+
+        if (!binding.latitudeField.text.contentEquals(profile.destination.location.latitude.toString())) {
+            binding.latitudeField.setText(profile.destination.location.latitude.toString())
+        }
+        if (!binding.longitudeField.text.contentEquals(profile.destination.location.longitude.toString())) {
+            binding.longitudeField.setText(profile.destination.location.longitude.toString())
         }
     }
 
