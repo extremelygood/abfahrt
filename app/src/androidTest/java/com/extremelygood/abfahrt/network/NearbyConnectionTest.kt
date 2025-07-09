@@ -27,7 +27,7 @@ class NearbyConnectionTest {
     @Before
     fun prepare() {
         connectionManager = mockk<NearbyConnectionManager>(relaxed = true)
-        nearbyConnection = NearbyConnection(connectionManager, ENDPOINT_ID, 50.milliseconds)
+        nearbyConnection = NearbyConnection(connectionManager, ENDPOINT_ID, 50.milliseconds, false)
         payloadCallback = nearbyConnection.getPayloadCallback()
     }
 

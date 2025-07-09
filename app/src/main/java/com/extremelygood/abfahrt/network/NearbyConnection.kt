@@ -24,6 +24,7 @@ class NearbyConnection(
     private val connectionManager: NearbyConnectionManager,
     private val endpointId: CharSequence,
     private val sessionExpireTime: Duration = DEFAULT_EXPIRE_TIME,
+    private val enableHeartbeatLogic: Boolean = true
 ) {
     private var peerIsReady = false
     private var tryHeartbeatJob: Job? = null
@@ -232,6 +233,10 @@ class NearbyConnection(
     }
 
     init {
-        tryHeartbeatLoop()
+        if (enableHeartbeatLogic) {
+            tryHeartbeatLoop()
+        } else {
+            handlePeerReady()
+        }
     }
 }
