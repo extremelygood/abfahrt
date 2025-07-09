@@ -180,6 +180,7 @@ class EncounterHandler(
      */
     private fun handleRequestEncountersList() {
         myCoroutineScope.launch {
+            Log.d("EncounterHandler", "Request List handling")
             val myProfileDeferred = async { database.loadMyProfile() }
             val encountersListDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
 
