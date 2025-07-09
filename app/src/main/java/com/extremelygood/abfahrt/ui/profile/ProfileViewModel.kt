@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.ui.profile
 
+import android.location.Location
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -7,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.extremelygood.abfahrt.classes.DatabaseManager
+import com.extremelygood.abfahrt.classes.GeoLocation
 import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
@@ -62,20 +64,23 @@ class ProfileViewModel(
 
 
     fun onDestinationSelected(latLng: LatLng) {
-        _destination.value = (latLng)
+        val current = _userProfile.value ?: return
 
-        if (_userProfile.value!!.destination.location.latitude == latLng.latitude &&
-            _userProfile.value!!.destination.location.longitude == latLng.longitude) {
-            return
+        // short-circuit if nothing changed
+        if (current.destination.location.latitude  == latLng.latitude &&
+            current.destination.location.longitude == latLng.longitude) return
+
+        val freshLocation = Location(GeoLocation.PROVIDER_MANUAL).apply {
+            latitude  = latLng.latitude
+            longitude = latLng.longitude
         }
 
-        val newProfile = _userProfile.value!!.copy()
+        val updatedProfile = current.copy(
+            destination = current.destination.copy(location = freshLocation)
+        )
 
-        newProfile.destination.location.latitude = latLng.latitude
-        newProfile.destination.location.longitude = latLng.longitude
-
-        _userProfile.value = newProfile
-
+        _userProfile.value = updatedProfile
+        _destination.value = latLng         // keep the extra LiveData in sync
         saveNewProfileState()
     }
 
