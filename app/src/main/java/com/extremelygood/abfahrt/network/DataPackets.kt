@@ -11,7 +11,8 @@ import kotlinx.serialization.modules.subclass
 
 val module = SerializersModule {
     polymorphic(BaseDataPacket::class) {
-        subclass(HeartbeatPacket::class)
+        subclass(RequestHeartbeat::class)
+        subclass(AcknowledgeHeartbeat::class)
         subclass(EncounterPacket::class)
         subclass(ImagePacket::class)
         subclass(RequestEncountersListPacket::class)
@@ -36,8 +37,11 @@ abstract class BaseDataPacket(
 
 @Serializable
 @SerialName("HEARTBEAT")
-class HeartbeatPacket : BaseDataPacket()
+class RequestHeartbeat : BaseDataPacket()
 
+@Serializable
+@SerialName("HEARTBEAT_ACKNOWLEDGE")
+class AcknowledgeHeartbeat : BaseDataPacket()
 
 /**
  * Packet to transmit an encounter this device has made (may include its own profile as an encounter)
