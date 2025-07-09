@@ -38,9 +38,12 @@ class AbfahrtApplication: Application() {
 
         connectionManager.setOnConnectionEstablished { newConnection ->
             Log.d("AbfahrtApplication", "Connection established callback")
-
+            newConnection.setOnReadyCallback {
+                Log.d("AbfahrtApplication", "On ready callback fired")
+                EncounterHandler(newConnection, databaseManager).start()
+            }
             Toast.makeText(applicationContext, "Connection established", Toast.LENGTH_SHORT).show()
-            EncounterHandler(newConnection, databaseManager).start()
+
         }
 
     }
