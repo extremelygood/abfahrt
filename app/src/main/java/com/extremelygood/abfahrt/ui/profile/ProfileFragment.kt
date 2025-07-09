@@ -10,13 +10,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.extremelygood.abfahrt.AbfahrtApplication
 import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
 import com.extremelygood.abfahrt.ui.viewModelFactory
-import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 
