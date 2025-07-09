@@ -4,9 +4,16 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.extremelygood.abfahrt.classes.DatabaseManager
+import com.extremelygood.abfahrt.classes.UserProfile
 import com.google.android.gms.maps.model.LatLng
 
-class ProfileViewModel : ViewModel() {
+class ProfileViewModel(
+    private val databaseManager: DatabaseManager
+) : ViewModel() {
+
+    private val userProfile = UserProfile()
+
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is profile Fragment"

@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.extremelygood.abfahrt.AbfahrtApplication
 import com.extremelygood.abfahrt.utils.ImagePicker
 import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
+import com.extremelygood.abfahrt.ui.viewModelFactory
 import com.google.android.gms.maps.CameraUpdate
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
@@ -25,11 +28,17 @@ class ProfileFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var imagePicker: ImagePicker
-    private lateinit var profileViewModel: ProfileViewModel
+
+    private val profileViewModel: ProfileViewModel by viewModels {
+        viewModelFactory {
+            ProfileViewModel(
+                AbfahrtApplication.appModule.databaseManager
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         imagePicker = ImagePicker(requireContext(), this, ::profileImageSelected)
 
     }
@@ -39,7 +48,9 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
+
+
+
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
