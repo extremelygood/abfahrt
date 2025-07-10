@@ -9,6 +9,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.extremelygood.abfahrt.classes.NotificationHandler
 import com.extremelygood.abfahrt.utils.RuntimePermissionsChecker
 import com.extremelygood.abfahrt.databinding.ActivityMainBinding
 
@@ -53,9 +54,13 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.BLUETOOTH_ADVERTISE,
             Manifest.permission.BLUETOOTH_CONNECT,
             Manifest.permission.NEARBY_WIFI_DEVICES,
+            Manifest.permission.POST_NOTIFICATIONS
             ),
             resultCallback
         )
         permissionsChecker.checkPermissions()
+
+        NotificationHandler.init(this)
     }
+
 }

@@ -2,6 +2,7 @@ package com.extremelygood.abfahrt.classes
 
 import com.extremelygood.abfahrt.classes.MatchProfile
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.extremelygood.abfahrt.database.AppDatabase
 import androidx.room.*
 import com.extremelygood.abfahrt.database.MIGRATION_1_2
@@ -63,4 +64,16 @@ class DatabaseManager private constructor(context: Context) {
             }
         }
     }
+    fun observeMatchProfile(userId: String): LiveData<MatchProfile?> {
+        return matchProfileDao.getByIdLive(userId)
+    }
+
+    fun observeAllMatches(limit: Int): LiveData<List<MatchProfile>> {
+        return matchProfileDao.getAllLive(limit)
+    }
+
+    fun observeMyProfile(): LiveData<UserProfile?> {
+        return userProfileDao.getProfileLive()
+    }
+
 }

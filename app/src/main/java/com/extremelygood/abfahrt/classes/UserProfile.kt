@@ -1,5 +1,6 @@
 package com.extremelygood.abfahrt.classes
 
+import androidx.room.Embedded
 import kotlinx.serialization.Serializable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -12,7 +13,7 @@ data class UserProfile(
     var lastName: String = "DefaultLastName",
     var age: Int = -1,
     var description: String = "DefaultDescription",
-    var destination: GeoLocation = GeoLocation(),
+    @Embedded var destination: GeoLocation = GeoLocation(),
     var isDriver: Boolean = false,
 )
 

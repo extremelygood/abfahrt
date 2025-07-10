@@ -1,6 +1,7 @@
 package com.extremelygood.abfahrt.database
 
 import android.provider.SyncStateContract.Helpers.update
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -33,4 +34,10 @@ interface MatchProfileDao {
 
     @Query("DELETE FROM match_profile")
     suspend fun clear()
+
+    @Query("SELECT * FROM match_profile WHERE userId = :userId LIMIT 1")
+    fun getByIdLive(userId: String): LiveData<MatchProfile?>
+
+    @Query("SELECT * FROM match_profile LIMIT :limit")
+    fun getAllLive(limit: Int): LiveData<List<MatchProfile>>
 }
