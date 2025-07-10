@@ -271,7 +271,7 @@ class DatabaseManagerTests {
         assertEquals(52.52, fromDb.destination.location.latitude, 0.0001)
         assertEquals(13.405, fromDb.destination.location.longitude, 0.0001)
 
-        // 5. Direkter JSON-Vergleich
+        // 5. Direkter JSON-Vergleich (optional)
         val json = Json { encodeDefaults = true }
         val serialized = json.encodeToString(GeoLocation.serializer(), geo)
         val expected = """{"locationName":"Berlin","location":{"latitude":52.52,"longitude":13.405}}"""
