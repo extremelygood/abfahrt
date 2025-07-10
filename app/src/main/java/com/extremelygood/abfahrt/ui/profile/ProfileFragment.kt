@@ -133,11 +133,7 @@ class ProfileFragment : Fragment() {
             binding.ageField.setText(ageText)
         }
 
-        /**
-        if (!binding.ageField.text.contentEquals(profile.age.toString())) {
-            binding.ageField.setText(profile.age.toString())
-        }
-        */
+    
 
         if (!binding.descriptionField.text.contentEquals(profile.description)) {
             binding.descriptionField.setText(profile.description)
