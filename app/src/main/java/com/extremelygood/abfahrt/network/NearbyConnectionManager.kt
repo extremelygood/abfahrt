@@ -160,7 +160,7 @@ class NearbyConnectionManager(
     }
 
     /**
-     * Low-Level method executed when a connection is (to-be) destroyed
+     * Method executed when a connection is (to-be) destroyed
      */
     private fun destroyNearbyConnection(endpointId: CharSequence) {
         val connectionObj = connectionsMap.remove(endpointId)
