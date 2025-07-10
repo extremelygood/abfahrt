@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.random.Random
 
-val TEST_TRANSMITTER_NAME: String = Random.nextInt(100_000).toString()
+val TRANSMITTER_NAME: String = Random.nextInt(100_000).toString()
 
 /**
  * Class for managing a nearby connection
@@ -50,7 +50,7 @@ class NearbyConnectionManager(
         val advertisingOptions: AdvertisingOptions = optionsBuilder.build()
 
 
-        val advertisement = connectionsClient.startAdvertising(TEST_TRANSMITTER_NAME, channelName, newLifecycleCallback(), advertisingOptions)
+        val advertisement = connectionsClient.startAdvertising(TRANSMITTER_NAME, channelName, newLifecycleCallback(), advertisingOptions)
     }
 
     /**
@@ -132,7 +132,7 @@ class NearbyConnectionManager(
         val callback = object: EndpointDiscoveryCallback() {
             override fun onEndpointFound(endpointId: String, info: DiscoveredEndpointInfo) {
                 if (!connectionsMap.contains(endpointId)) {
-                    connectionsClient.requestConnection(TEST_TRANSMITTER_NAME, endpointId, newLifecycleCallback())
+                    connectionsClient.requestConnection(TRANSMITTER_NAME, endpointId, newLifecycleCallback())
                 }
             }
 
