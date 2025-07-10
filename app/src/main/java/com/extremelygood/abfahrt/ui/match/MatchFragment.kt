@@ -59,7 +59,6 @@ class MatchFragment : Fragment() {
             val defaultLatLng = LatLng(52.520008, 13.404954)
             val defaultZoomLvl = 10f
 
-            // Kamera setzen oder Klicklistener
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoomLvl))
             this.googleMap = googleMap
 
@@ -100,9 +99,6 @@ class MatchFragment : Fragment() {
         binding.mapView.onLowMemory()
     }
 
-    private fun displayNoMatch() {
-
-    }
 
 
     private fun setMatchDestinationMarker(newLatLng: LatLng?) {
