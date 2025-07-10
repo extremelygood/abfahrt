@@ -97,7 +97,7 @@ class ProfileViewModel(
             return
         }
 
-        val ageTobeAssigned = max(ageAsInt, MAX_AGE)
+        val ageTobeAssigned = min(ageAsInt, MAX_AGE)
 
         if (_userProfile.value!!.age == ageTobeAssigned) {
             return
