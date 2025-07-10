@@ -63,6 +63,8 @@ class EncounterHandler(
 
     private fun handleEncounterReceive(packet: EncounterPacket) {
         myCoroutineScope.launch {
+            Log.d("EncounterHandler", "Receiving encounter data")
+
             val encounterProfile = packet.encounter.userProfile
             val existingProfile = database.getMatchProfile(encounterProfile.id)
 
@@ -84,7 +86,8 @@ class EncounterHandler(
                 encounterProfile.age,
                 encounterProfile.description,
                 encounterProfile.isDriver,
-                encounterProfile.destination
+                encounterProfile.destination,
+                packet.encounter.encounterTime
             )
 
             database.saveMatchProfile(newMatchProfile)
@@ -98,7 +101,7 @@ class EncounterHandler(
             Log.d("EncounterHandler", "Got encounters list: " + packet.profileIdslist)
             val interestedIds = mutableListOf<String>()
 
-            packet.profileIdslist.forEach { id ->
+            for (id in packet.profileIdslist) {
                 val existingProfile = database.getMatchProfile(id)
 
                 // Does not exist locally case, we want this definitely
@@ -108,14 +111,14 @@ class EncounterHandler(
             }
 
             if (interestedIds.isNotEmpty()) {
+                Log.d("EncounterHandler", "Sending request for more information about IDs: $interestedIds")
                 connection.sendPacket(RequestEncountersPacket(interestedIds), listOf())
+            } else {
+                Log.d("EncounterHandler", "Interested Ids is empty, not sending packet")
             }
 
+
         }
-    }
-
-    private fun handleImageReceive(combinedPacket: ParsedCombinedPacket) {
-
     }
 
     /**
@@ -123,6 +126,8 @@ class EncounterHandler(
      */
     private fun handleRequestEncounter(packet: RequestEncountersPacket) {
         myCoroutineScope.launch {
+            Log.d("EncounterHandler", "Peer is requesting specific encounters")
+
             val myProfileDeferred = async { database.loadMyProfile() }
             val encountersListDeferred = async { database.getAllMatches(MAX_ENCOUNTERS_TO_GET) }
 
@@ -197,8 +202,11 @@ class EncounterHandler(
                 listOfIds.add(encounter.userId)
             }
 
-            if (encountersList.isNotEmpty()) {
+            if (listOfIds.isNotEmpty()) {
+                Log.d("EncounterHandler", "Sending list")
                 connection.sendPacket(EncountersListPacket(listOfIds), listOf())
+            } else {
+                Log.d("EncounterHandler", "List is empty did not send")
             }
         }
     }
