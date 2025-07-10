@@ -106,9 +106,6 @@ class ProfileViewModel(
             delay(1000)
             val currentMutableProfile = _userProfile.value
             if (currentMutableProfile != null) {
-                Log.d("ProfileViewModel", "Saving latitude - " + currentMutableProfile.destination.location.latitude)
-                Log.d("ProfileViewModel", "Saving longitude - " + currentMutableProfile.destination.location.longitude)
-
                 databaseManager.saveMyProfile(currentMutableProfile)
             }
         }
