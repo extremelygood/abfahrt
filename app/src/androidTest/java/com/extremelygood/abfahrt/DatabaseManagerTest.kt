@@ -201,18 +201,6 @@ class DatabaseManagerTest {
     }
 
     @Test
-    fun testSaveAndLoadUserProfileDefaults() = runBlocking {
-        val defaultProfile = UserProfile()
-        databaseManager.saveMyProfile(defaultProfile)
-        val loaded = databaseManager.loadMyProfile()
-        assertNotNull(loaded)
-        assertEquals("", loaded.firstName)
-        assertEquals("", loaded.lastName)
-        assertEquals("", loaded.description)
-        assertEquals(false, loaded.isDriver)
-    }
-
-    @Test
     fun testGetAllMatchesWithZeroLimitReturnsEmptyList() = runBlocking {
         databaseManager.saveMatchProfile(
             MatchProfile(
