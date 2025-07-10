@@ -196,7 +196,21 @@ class EncounterHandler(
             val listOfIds = mutableListOf<String>()
 
             if (myProfile != null) {
-                listOfIds.add(myProfile.id)
+
+                // Add own profile, but only if required fields are met
+                var firstNameOK = false
+                if (!myProfile.firstName.contentEquals("")) {
+                    firstNameOK = true
+                }
+
+                var destinationOK = false
+                if (myProfile.destination.location.latitude != 0.toDouble() && myProfile.destination.location.longitude != 0.toDouble()) {
+                    destinationOK = true
+                }
+
+                if (firstNameOK && destinationOK) {
+                    listOfIds.add(myProfile.id)
+                }
             }
             encountersList.forEach { encounter ->
                 listOfIds.add(encounter.userId)
