@@ -92,6 +92,10 @@ class ProfileFragment : Fragment() {
             entry.key.addTextChangedListener(textWatcher)
         }
 
+        binding.isDriverSwitch.setOnCheckedChangeListener { _, isChecked ->
+            isDriverInput(isChecked)
+        }
+
         binding.mapView.getMapAsync { googleMap ->
             val defaultLatLng = LatLng(52.520008, 13.404954)
             val defaultZoomLvl = 8f
@@ -123,11 +127,24 @@ class ProfileFragment : Fragment() {
         if (!binding.lastNameText.text.contentEquals(profile.lastName)) {
             binding.lastNameText.setText(profile.lastName)
         }
+
+        val ageText = if (profile.age < 1) "" else profile.age.toString()
+        if (!binding.ageField.text.contentEquals(ageText)) {
+            binding.ageField.setText(ageText)
+        }
+
+        /**
         if (!binding.ageField.text.contentEquals(profile.age.toString())) {
             binding.ageField.setText(profile.age.toString())
         }
+        */
+
         if (!binding.descriptionField.text.contentEquals(profile.description)) {
             binding.descriptionField.setText(profile.description)
+        }
+
+        if (!binding.isDriverSwitch.isChecked == profile.isDriver) {
+            binding.isDriverSwitch.isChecked = profile.isDriver
         }
 
         if (!binding.latitudeField.text.contentEquals(profile.destination.location.latitude.toString())) {
@@ -214,6 +231,10 @@ class ProfileFragment : Fragment() {
         }
         profileViewModel.onDestinationSelected(newLatLng)
         setDestinationMarker(newLatLng)
+    }
+
+    private fun isDriverInput(newState: Boolean) {
+        profileViewModel.onIsDriverSelected(binding.isDriverSwitch.isChecked)
     }
 
 
