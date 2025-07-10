@@ -16,6 +16,7 @@ import kotlin.math.max
 
 
 const val MAX_AGE = 100
+const val MAX_SHORT_CHARS = 35
 
 class ProfileViewModel(
     private val databaseManager: DatabaseManager
