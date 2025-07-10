@@ -1,8 +1,6 @@
 package com.extremelygood.abfahrt.ui.profile
 
 import android.location.Location
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,6 +12,10 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.max
+
+
+const val MAX_AGE = 100
 
 class ProfileViewModel(
     private val databaseManager: DatabaseManager
@@ -77,11 +79,13 @@ class ProfileViewModel(
             return
         }
 
-        if (_userProfile.value!!.age == ageAsInt) {
+        val ageTobeAssigned = max(ageAsInt, MAX_AGE)
+
+        if (_userProfile.value!!.age == ageTobeAssigned) {
             return
         }
 
-        val newProfile = _userProfile.value!!.copy(age = ageAsInt)
+        val newProfile = _userProfile.value!!.copy(age = ageTobeAssigned)
         _userProfile.value = newProfile
 
         saveNewProfileState()
@@ -98,6 +102,16 @@ class ProfileViewModel(
         saveNewProfileState()
     }
 
+    fun onIsDriverSelected(newState: Boolean) {
+        if (_userProfile.value!!.isDriver == newState) {
+            return
+        }
+
+        val newProfile = _userProfile.value!!.copy(isDriver = newState)
+        _userProfile.value = newProfile
+
+        saveNewProfileState()
+    }
 
     private fun saveNewProfileState() {
         saveToDatabaseJob?.cancel()
