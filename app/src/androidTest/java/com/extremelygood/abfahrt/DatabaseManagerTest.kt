@@ -216,9 +216,9 @@ class DatabaseManagerTest {
         databaseManager.saveMyProfile(defaultProfile)
         val loaded = databaseManager.loadMyProfile()
         assertNotNull(loaded)
-        assertEquals("DefaultFirstName", loaded!!.firstName)
-        assertEquals("DefaultLastName", loaded.lastName)
-        assertEquals("DefaultDescription", loaded.description)
+        assertEquals("", loaded!!.firstName)
+        assertEquals("", loaded.lastName)
+        assertEquals("", loaded.description)
         assertEquals(false, loaded.isDriver)
     }
 
