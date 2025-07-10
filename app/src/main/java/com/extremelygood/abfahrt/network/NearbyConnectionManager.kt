@@ -1,6 +1,7 @@
 package com.extremelygood.abfahrt.network
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.AdvertisingOptions
 import com.google.android.gms.nearby.connection.ConnectionInfo
@@ -148,6 +149,8 @@ class NearbyConnectionManager(
      * Low-Level method executed when a connection is established
      */
     private fun connectionEstablished(endpointID: CharSequence): NearbyConnection {
+        Log.d("NearbyConnectionManager", "Connection established")
+
         val connection = NearbyConnection(this, endpointID)
         connectionsMap[endpointID] = connection
 
