@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.extremelygood.abfahrt.AbfahrtApplication
 import com.extremelygood.abfahrt.classes.DatabaseManager
 import com.extremelygood.abfahrt.classes.MatchProfile
+import com.extremelygood.abfahrt.classes.NotificationHandler
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -22,6 +24,9 @@ class MatchViewModel(
     val matchProfile: LiveData<MatchProfile?> = _matchProfile
 
 
+    /**
+     * Method to handle a match being found
+     */
     private fun bestMatchFound(bestMatch: MatchProfile?) {
         // No best match found case
         if (bestMatch == null) {
@@ -43,9 +48,19 @@ class MatchViewModel(
     }
 
     /**
+     * Method to fire a notification
+     */
+    private fun showNotif() {
+        NotificationHandler.showNotification(
+            AbfahrtApplication.appModule.appContext,
+            "Found a match!", "We found someone to ride with"
+        )
+    }
+
+    /**
      * Master method that looks for a match to display
      */
-    private fun evaluateMatches() {
+    private fun evaluateMatches(withNotification: Boolean) {
         evalMatchesJob?.cancel()
 
         evalMatchesJob = viewModelScope.launch {
@@ -84,6 +99,9 @@ class MatchViewModel(
 
             }
             bestMatchFound(closestAcceptableMatch)
+            if (withNotification && closestAcceptableMatch != null) {
+                showNotif()
+            }
         }
     }
 
@@ -91,11 +109,11 @@ class MatchViewModel(
 
     init {
         databaseManager.setOnMatchesChangedListener {
-            evaluateMatches()
+            evaluateMatches(withNotification = true)
         }
         databaseManager.setOnProfileChangedListener {
-            evaluateMatches()
+            evaluateMatches(withNotification = true)
         }
-        evaluateMatches()
+        evaluateMatches(withNotification = false)
     }
 }
