@@ -65,6 +65,12 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.play.services.maps)
     testImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.espresso.contrib)
+    androidTestImplementation(libs.espresso.intents)
+    androidTestImplementation(libs.espresso.idling.resource)
+    androidTestImplementation(libs.fragment.testing)
+
 
 
     // Room

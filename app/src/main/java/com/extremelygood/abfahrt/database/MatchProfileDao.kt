@@ -27,7 +27,7 @@ interface MatchProfileDao {
 
     suspend fun upsert(profile: MatchProfile) {
         val inserted = insert(profile)
-        if (inserted == -1L) {            // existiert schon → nur Update
+        if (inserted == -1L) {
             update(profile)
         }
     }

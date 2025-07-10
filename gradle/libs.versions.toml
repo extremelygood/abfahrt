@@ -23,6 +23,9 @@ roomRuntimeAndroid = "2.7.2"
 ksp = "2.0.20-1.0.24"
 coroutines = "1.10.1"
 room = "2.6.1"
+espresso = "3.5.1"
+fragment-testing = "1.7.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,9 +50,11 @@ androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", 
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
-
-
-
+espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso" }
+espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "espresso" }
+espresso-intents = { group = "androidx.test.espresso", name = "espresso-intents", version.ref = "espresso" }
+espresso-idling-resource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "espresso" }
+fragment-testing = { group = "androidx.fragment", name = "fragment-testing", version.ref = "fragment-testing" }
 androidx-room-ktx       = { module = "androidx.room:room-ktx",       version = "2.6.1" }
 androidx-room-compiler  = { module = "androidx.room:room-compiler",  version = "2.6.1" }
 androidx-room-testing   = { module = "androidx.room:room-testing",   version = "2.6.1" }

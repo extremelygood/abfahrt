@@ -8,8 +8,9 @@ import androidx.room.*
 import com.extremelygood.abfahrt.database.MIGRATION_1_2
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
-class DatabaseManager private constructor(context: Context) {
+class DatabaseManager private constructor(private val context: Context) {
     private val db: AppDatabase = Room.databaseBuilder(
         context.applicationContext,
         AppDatabase::class.java,
@@ -20,12 +21,22 @@ class DatabaseManager private constructor(context: Context) {
     private val matchProfileDao = db.matchProfileDao()
     private val userProfileDao = db.userProfileDao()
 
+    fun getOrCreateMyUserId(): String {
+        val prefs = db.openHelper.readableDatabase.path.let {
+            val context = context // Hole dir den Kontext aus der DB
+            context.getSharedPreferences("abfahrt_prefs", Context.MODE_PRIVATE)
+        }
+
+        return prefs.getString("my_user_id", null) ?: UUID.randomUUID().toString().also {
+            prefs.edit().putString("my_user_id", it).apply()
+        }
+    }
+
     private var onMatchesChangedListener: (() -> Unit)? = null
 
     fun setOnMatchesChangedListener(callback: (() -> Unit)) {
         onMatchesChangedListener = callback
     }
-
 
     suspend fun saveMatchProfile(profile: MatchProfile) {
         withContext(Dispatchers.IO) {
@@ -65,11 +76,26 @@ class DatabaseManager private constructor(context: Context) {
         }
     }
 
-    suspend fun loadMyProfile(): UserProfile? {
+    suspend fun loadMyProfile(): UserProfile {
         return withContext(Dispatchers.IO) {
-            userProfileDao.getProfile()
+            val id = getOrCreateMyUserId()
+            val existing = userProfileDao.getProfile(id)
+            if (existing != null) {
+                existing
+            } else {
+                val newProfile = UserProfile(id = id)
+                userProfileDao.upsert(newProfile)
+                newProfile
+            }
         }
     }
+
+    fun getMyUserId(): String? {
+        val prefs = context.getSharedPreferences("abfahrt_prefs", Context.MODE_PRIVATE)
+        return prefs.getString("my_user_id", null)
+    }
+
+
 
     companion object {
         @Volatile private var INSTANCE: DatabaseManager? = null
