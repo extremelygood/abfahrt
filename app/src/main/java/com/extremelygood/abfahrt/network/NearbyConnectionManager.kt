@@ -15,8 +15,9 @@ import com.google.android.gms.nearby.connection.Payload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.coroutineContext
+import kotlin.random.Random
 
-const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
+val TEST_TRANSMITTER_NAME: String = Random.nextInt(100_000).toString()
 
 /**
  * Class for managing a nearby connection
