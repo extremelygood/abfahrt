@@ -97,6 +97,13 @@ class DatabaseManager private constructor(private val context: Context) {
         }
     }
 
+    suspend fun purgeOlderThan30Minutes() {
+        withContext(Dispatchers.IO) {
+            matchProfileDao.purgeOlderThan30Minutes()
+            onMatchesChangedListener?.invoke()
+        }
+    }
+
     fun getMyUserId(): String? {
         val prefs = context.getSharedPreferences("abfahrt_prefs", Context.MODE_PRIVATE)
         return prefs.getString("my_user_id", null)
