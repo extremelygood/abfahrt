@@ -31,7 +31,6 @@ class AbfahrtApplication: Application() {
 
     }
 
-
      fun tryStartConnectionManager() {
         connectionManager.startDiscovery()
         connectionManager.startAdvertising()
@@ -47,9 +46,4 @@ class AbfahrtApplication: Application() {
         }
 
     }
-
-
-
-
-
 }

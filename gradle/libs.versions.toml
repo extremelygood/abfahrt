@@ -21,6 +21,7 @@ mockk = "1.14.4"
 roomCommonJvm = "2.7.2"
 roomRuntimeAndroid = "2.7.2"
 ksp = "2.0.20-1.0.24"
+coroutines = "1.10.1"
 room = "2.6.1"
 
 [libraries]
@@ -45,6 +46,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 androidx-room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
+
 
 
 androidx-room-ktx       = { module = "androidx.room:room-ktx",       version = "2.6.1" }

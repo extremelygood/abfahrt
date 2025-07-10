@@ -26,5 +26,4 @@ class ImagePicker(
             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
         )
     }
-
 }

@@ -38,6 +38,12 @@ class DatabaseManager private constructor(context: Context) {
         }
     }
 
+    suspend fun deleteMatchProfile(userId: String) {
+        withContext(Dispatchers.IO) {
+            matchProfileDao.deleteById(userId)
+        }
+    }
+
     suspend fun clearMatches() {
         withContext(Dispatchers.IO) {
             matchProfileDao.clear()
@@ -49,6 +55,7 @@ class DatabaseManager private constructor(context: Context) {
             userProfileDao.upsert(profile)
         }
     }
+
     suspend fun loadMyProfile(): UserProfile? {
         return withContext(Dispatchers.IO) {
             userProfileDao.getProfile()
@@ -64,16 +71,4 @@ class DatabaseManager private constructor(context: Context) {
             }
         }
     }
-    fun observeMatchProfile(userId: String): LiveData<MatchProfile?> {
-        return matchProfileDao.getByIdLive(userId)
-    }
-
-    fun observeAllMatches(limit: Int): LiveData<List<MatchProfile>> {
-        return matchProfileDao.getAllLive(limit)
-    }
-
-    fun observeMyProfile(): LiveData<UserProfile?> {
-        return userProfileDao.getProfileLive()
-    }
-
 }

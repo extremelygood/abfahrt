@@ -17,6 +17,5 @@ class MatchViewModel(application: Application) : AndroidViewModel(application) {
      * Setzt das zu beobachtende Profil anhand der userId
      */
     fun loadProfile(userId: String) {
-        matchProfile = database.observeMatchProfile(userId)
     }
 }

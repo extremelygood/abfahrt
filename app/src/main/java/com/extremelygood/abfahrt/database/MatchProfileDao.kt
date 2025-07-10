@@ -32,6 +32,10 @@ interface MatchProfileDao {
         }
     }
 
+    @Query("DELETE FROM match_profile WHERE userId = :userId")
+    suspend fun deleteById(userId: String)
+
+
     @Query("DELETE FROM match_profile")
     suspend fun clear()
 

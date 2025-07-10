@@ -11,7 +11,7 @@ import junit.framework.TestCase.assertTrue
 import org.junit.Before
 import org.junit.Test
 
-class NotificationHandlerTests {
+class NotificationHandlerTest {
     private lateinit var context: Context
 
     @Before

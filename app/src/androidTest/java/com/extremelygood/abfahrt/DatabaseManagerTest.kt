@@ -18,7 +18,7 @@ import org.junit.Before
 import org.junit.Test
 import java.io.IOException
 
-class DatabaseManagerTests {
+class DatabaseManagerTest {
     private lateinit var db: AppDatabase
     private lateinit var databaseManager: DatabaseManager
     private lateinit var dao: UserProfileDao
@@ -279,4 +279,34 @@ class DatabaseManagerTests {
         assertEquals(expected, serialized)
     }
 
+    @Test
+    fun testDeleteMatchProfile() = runBlocking {
+        val profile = MatchProfile(
+            userId = "delete_me",
+            firstName = "To",
+            lastName = "Delete",
+            age = 31,
+            description = "Should be gone",
+            isDriver = false,
+            destination = GeoLocation(
+                locationName = "Nowhere",
+                location = Location("").apply {
+                    latitude = 0.0
+                    longitude = 0.0
+                }
+            )
+        )
+
+        // Speichern und sicherstellen, dass es existiert
+        databaseManager.saveMatchProfile(profile)
+        val loadedBeforeDelete = databaseManager.getMatchProfile("delete_me")
+        assertNotNull(loadedBeforeDelete)
+
+        // Jetzt löschen
+        databaseManager.deleteMatchProfile("delete_me")
+
+        // Sicherstellen, dass es gelöscht wurde
+        val loadedAfterDelete = databaseManager.getMatchProfile("delete_me")
+        assertNull(loadedAfterDelete)
+    }
 }
