@@ -18,6 +18,7 @@ import com.extremelygood.abfahrt.classes.UserProfile
 abstract class AppDatabase : RoomDatabase() {
     abstract fun matchProfileDao(): MatchProfileDao
     abstract fun userProfileDao(): UserProfileDao
+
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {

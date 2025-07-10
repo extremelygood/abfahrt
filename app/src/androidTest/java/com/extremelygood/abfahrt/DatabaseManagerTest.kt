@@ -165,20 +165,24 @@ class DatabaseManagerTest {
     // --------------------------------------------------------------------
     @Test
     fun testSaveAndLoadUserProfile() = runBlocking {
+        val myId = databaseManager.getOrCreateMyUserId()  // Holt die UUID aus SharedPreferences
         val me = UserProfile(
+            id = myId,
             firstName = "Emil",
             lastName = "Schmiade",
             age = 20,
             description = "App‑Dev",
             isDriver = true
         )
+
         databaseManager.saveMyProfile(me)
         val loaded = databaseManager.loadMyProfile()
 
         assertNotNull(loaded)
-        assertEquals("Emil", loaded!!.firstName)
+        assertEquals("Emil", loaded.firstName)
         assertEquals(true, loaded.isDriver)
     }
+
     @Test
     fun testUpsertMatchProfileUpdatesFieldsButKeepsTimestamp() = runBlocking {
         val original = MatchProfile(
