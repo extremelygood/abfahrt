@@ -44,4 +44,13 @@ interface MatchProfileDao {
 
     @Query("SELECT * FROM match_profile LIMIT :limit")
     fun getAllLive(limit: Int): LiveData<List<MatchProfile>>
+
+
+    @Query("DELETE FROM match_profile WHERE firstSeenAt < :cutoff")
+    suspend fun deleteOlderThan(cutoff: Long)
+
+    suspend fun purgeOlderThan30Minutes() {
+        val cutoff = System.currentTimeMillis() - 30 * 60 * 1000  // 30 min in ms
+        deleteOlderThan(cutoff)
+    }
 }
