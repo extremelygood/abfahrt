@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.databaseTests
+package com.extremelygood.abfahrt
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -84,9 +84,6 @@ class DatabaseManagerTest {
         assertEquals(13.405, loaded?.destination?.location?.longitude)
     }
 
-    // --------------------------------------------------------------------
-    // 2) firstSeenAt‑Timestamp bleibt stabil bei Upsert
-    // --------------------------------------------------------------------
     @Test
     fun testFirstSeenTimestampStable() = runBlocking {
         val p1 = MatchProfile(
@@ -103,19 +100,15 @@ class DatabaseManagerTest {
         val t1 = first.firstSeenAt
         assertTrue(t1 > 0)
 
-        //  Kurze Pause, dann mit geändertem Text erneut speichern
         Thread.sleep(20)
         val p2 = p1.copy(description = "🚗⚽")
         databaseManager.saveMatchProfile(p2)
 
         val reloaded = databaseManager.getMatchProfile("42")!!
-        assertEquals(t1, reloaded.firstSeenAt)      // Timestamp gleich geblieben
+        assertEquals(t1, reloaded.firstSeenAt)
         assertEquals("🚗⚽", reloaded.description)
     }
 
-    // --------------------------------------------------------------------
-    // 3) getAllMatches() respektiert Limit
-    // --------------------------------------------------------------------
     @Test
     fun testGetAllMatchesLimit() = runBlocking {
         repeat(3) { idx ->
@@ -139,9 +132,6 @@ class DatabaseManagerTest {
         assertEquals(2, two.size)
     }
 
-    // --------------------------------------------------------------------
-    // 4) clearMatches() leert die Tabelle
-    // --------------------------------------------------------------------
     @Test
     fun testClearMatches() = runBlocking {
         val profile = MatchProfile(
@@ -160,12 +150,9 @@ class DatabaseManagerTest {
         assertNull(loaded)
     }
 
-    // --------------------------------------------------------------------
-    // 5) Speichern und Laden des eigenen UserProfiles
-    // --------------------------------------------------------------------
     @Test
     fun testSaveAndLoadUserProfile() = runBlocking {
-        val myId = databaseManager.getOrCreateMyUserId()  // Holt die UUID aus SharedPreferences
+        val myId = databaseManager.getOrCreateMyUserId()
         val me = UserProfile(
             id = myId,
             firstName = "Emil",
@@ -198,7 +185,6 @@ class DatabaseManagerTest {
         val loadedOriginal = databaseManager.getMatchProfile("999")!!
         val timestampBefore = loadedOriginal.firstSeenAt
 
-        // Jetzt updaten mit anderem Namen und Beschreibung, Timestamp soll gleich bleiben
         val updated = original.copy(firstName = "Updated", description = "New desc")
         databaseManager.saveMatchProfile(updated)
         val loadedUpdated = databaseManager.getMatchProfile("999")!!
@@ -220,7 +206,7 @@ class DatabaseManagerTest {
         databaseManager.saveMyProfile(defaultProfile)
         val loaded = databaseManager.loadMyProfile()
         assertNotNull(loaded)
-        assertEquals("", loaded!!.firstName)
+        assertEquals("", loaded.firstName)
         assertEquals("", loaded.lastName)
         assertEquals("", loaded.description)
         assertEquals(false, loaded.isDriver)
@@ -245,7 +231,6 @@ class DatabaseManagerTest {
 
     @Test
     fun testGeoLocationSerializationAndStorage() = runBlocking {
-        // 1. Testdaten
         val location = android.location.Location("test").apply {
             latitude = 52.52
             longitude = 13.405
@@ -263,19 +248,15 @@ class DatabaseManagerTest {
             isDriver = true
         )
 
-        // 2. In DB speichern
         dao.upsert(user)
 
-        // 3. Wieder auslesen
         val fromDb = dao.getProfile("me")
         requireNotNull(fromDb)
 
-        // 4. Vergleich
         assertEquals("Berlin", fromDb.destination.locationName)
         assertEquals(52.52, fromDb.destination.location.latitude, 0.0001)
         assertEquals(13.405, fromDb.destination.location.longitude, 0.0001)
 
-        // 5. Direkter JSON-Vergleich (optional)
         val json = Json { encodeDefaults = true }
         val serialized = json.encodeToString(GeoLocation.serializer(), geo)
         val expected = """{"locationName":"Berlin","location":{"latitude":52.52,"longitude":13.405}}"""
@@ -301,15 +282,12 @@ class DatabaseManagerTest {
             )
         )
 
-        // Speichern und sicherstellen, dass es existiert
         databaseManager.saveMatchProfile(profile)
         val loadedBeforeDelete = databaseManager.getMatchProfile("delete_me")
         assertNotNull(loadedBeforeDelete)
 
-        // Jetzt löschen
         databaseManager.deleteMatchProfile("delete_me")
 
-        // Sicherstellen, dass es gelöscht wurde
         val loadedAfterDelete = databaseManager.getMatchProfile("delete_me")
         assertNull(loadedAfterDelete)
     }

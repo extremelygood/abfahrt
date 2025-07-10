@@ -3,7 +3,6 @@ package com.extremelygood.abfahrt.classes
 
 import androidx.room.*
 import androidx.room.PrimaryKey
-import com.extremelygood.abfahrt.classes.GeoLocation
 
 // Datenklasse (Entity)
 @Entity(tableName = "match_profile")

@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import java.net.URI
 
 /**
  * Class to get an image from a user

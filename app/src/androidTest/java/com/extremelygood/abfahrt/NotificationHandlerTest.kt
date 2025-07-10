@@ -38,7 +38,6 @@ class NotificationHandlerTest {
 
     @Test
     fun notification_shouldTriggerWithoutCrash() {
-        // Kein assert – nur sicherstellen, dass kein Fehler geworfen wird
         NotificationHandler.showNotification(
             context = context,
             title = "Test",

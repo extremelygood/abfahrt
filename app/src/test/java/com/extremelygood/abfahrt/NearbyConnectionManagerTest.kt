@@ -1,4 +1,4 @@
-package com.extremelygood.abfahrt.networkTests
+package com.extremelygood.abfahrt
 
 import android.content.Context
 import com.extremelygood.abfahrt.network.NearbyConnectionManager

@@ -1,7 +1,6 @@
 package com.extremelygood.abfahrt.network
 
 import android.util.Log
-import com.extremelygood.abfahrt.AbfahrtApplication
 import com.google.android.gms.nearby.connection.Payload
 import com.google.android.gms.nearby.connection.PayloadCallback
 import com.google.android.gms.nearby.connection.PayloadTransferUpdate

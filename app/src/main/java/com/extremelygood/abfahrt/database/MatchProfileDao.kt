@@ -1,6 +1,5 @@
 package com.extremelygood.abfahrt.database
 
-import android.provider.SyncStateContract.Helpers.update
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert

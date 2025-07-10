@@ -71,8 +71,6 @@ dependencies {
     androidTestImplementation(libs.espresso.idling.resource)
     androidTestImplementation(libs.fragment.testing)
 
-
-
     // Room
     implementation(libs.androidx.room.common.jvm)
     implementation(libs.androidx.room.runtime.android)

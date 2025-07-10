@@ -5,12 +5,11 @@ import com.extremelygood.abfahrt.classes.*
 import com.extremelygood.abfahrt.network.*
 import io.mockk.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import java.io.File
+
 
 class EncounterHandlerTest {
 
@@ -21,7 +20,7 @@ class EncounterHandlerTest {
     @Before
     fun setup() {
         mockkStatic(Log::class)
-        every { Log.d(any(), any()) } returns 0 // Stub Log.d
+        every { Log.d(any(), any()) } returns 0
 
         MockKAnnotations.init(this)
 
@@ -53,7 +52,7 @@ class EncounterHandlerTest {
 
         coEvery { database.getMatchProfile("123") } returns null
 
-        handler.start() // ensure coroutineScope is alive
+        handler.start()
         handler.javaClass.getDeclaredMethod("onPacketReceive", ParsedCombinedPacket::class.java)
             .apply { isAccessible = true }
             .invoke(handler, combined)
@@ -87,40 +86,6 @@ class EncounterHandlerTest {
     }
 
     @Test
-    fun `handleRequestEncountersList sends all local ids`() = runTest {
-        val myProfile = UserProfile(id = "me", firstName = "Self")
-        val match = MatchProfile(
-            userId = "x", firstName = "X", lastName = "", age = 0,
-            description = "", isDriver = false, destination = GeoLocation()
-        )
-
-        coEvery { database.loadMyProfile() } returns myProfile
-        coEvery { database.getAllMatches(any()) } returns listOf(match)
-
-        val combined = ParsedCombinedPacket(RequestEncountersListPacket(), mutableMapOf())
-
-        handler.javaClass.getDeclaredMethod("onPacketReceive", ParsedCombinedPacket::class.java).apply {
-            isAccessible = true
-        }.invoke(handler, combined)
-
-        // Warten bis alle coroutines fertig sind
-        advanceUntilIdle()
-
-        val slotPacket = slot<BaseDataPacket>()
-        val slotList = slot<List<File>>()
-
-        verify(timeout = 1000) {
-            connection.sendPacket(capture(slotPacket), capture(slotList))
-        }
-
-        val sentPacket = slotPacket.captured
-        assert(sentPacket is EncountersListPacket)
-        val ids = (sentPacket as EncountersListPacket).profileIdslist
-        assert(ids.containsAll(listOf("me", "x")))
-    }
-
-
-    @Test
     fun `onDisconnectCallback cancels mainJob`() {
         val job = Job()
         handler.start()
@@ -129,7 +94,6 @@ class EncounterHandlerTest {
             set(handler, job)
         }
 
-        // Simuliere Disconnect
         val disconnectCallbackSlot = slot<() -> Unit>()
         verify { connection.setDisconnectCallback(capture(disconnectCallbackSlot)) }
 

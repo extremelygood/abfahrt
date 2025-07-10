@@ -12,7 +12,6 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.max
 import kotlin.math.min
 
 

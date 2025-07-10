@@ -2,10 +2,7 @@ package com.extremelygood.abfahrt.classes
 
 import android.location.Location
 import androidx.room.TypeConverter
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import com.extremelygood.abfahrt.classes.GeoLocation
 
 class Converters {
 
