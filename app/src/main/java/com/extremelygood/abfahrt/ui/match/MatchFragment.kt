@@ -148,7 +148,7 @@ class MatchFragment : Fragment() {
 
     private fun onBestMatchChanged(bestMatch: MatchProfile?) {
         if (bestMatch == null) {
-            displayNoMatch()
+            return
         } else {
             displayMatch(bestMatch)
         }
