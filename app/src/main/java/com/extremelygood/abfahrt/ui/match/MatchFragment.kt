@@ -62,6 +62,15 @@ class MatchFragment : Fragment() {
             // Kamera setzen oder Klicklistener
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoomLvl))
             this.googleMap = googleMap
+
+            // Check if there is a match to display
+            val matchToDisplay = matchViewModel.matchProfile.value
+            if (matchToDisplay == null) {
+                return@getMapAsync
+            }
+
+            val newLatLng = LatLng(matchToDisplay.destination.location.latitude, matchToDisplay.destination.location.longitude)
+            setMatchDestinationMarker(newLatLng)
         }
 
         matchViewModel.matchProfile.observe(viewLifecycleOwner) { bestMatch ->
