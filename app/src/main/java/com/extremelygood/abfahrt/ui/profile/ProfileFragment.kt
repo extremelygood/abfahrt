@@ -214,8 +214,6 @@ class ProfileFragment : Fragment() {
         }
         profileViewModel.onDestinationSelected(newLatLng)
         setDestinationMarker(newLatLng)
-
-        Toast.makeText(requireContext(), newLatLng.toString(), Toast.LENGTH_SHORT).show()
     }
 
 
