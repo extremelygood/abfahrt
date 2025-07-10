@@ -57,9 +57,17 @@ class MatchFragment : Fragment() {
             val defaultLatLng = LatLng(52.520008, 13.404954)
             val defaultZoomLvl = 10f
 
-            // Kamera setzen oder Klicklistener
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLatLng, defaultZoomLvl))
             this.googleMap = googleMap
+
+            // Check if there is a match to display
+            val matchToDisplay = matchViewModel.matchProfile.value
+            if (matchToDisplay == null) {
+                return@getMapAsync
+            }
+
+            val newLatLng = LatLng(matchToDisplay.destination.location.latitude, matchToDisplay.destination.location.longitude)
+            setMatchDestinationMarker(newLatLng)
         }
 
         matchViewModel.matchProfile.observe(viewLifecycleOwner) { bestMatch ->
@@ -89,9 +97,6 @@ class MatchFragment : Fragment() {
         binding.mapView.onLowMemory()
     }
 
-    private fun displayNoMatch() {
-
-    }
 
 
     private fun setMatchDestinationMarker(newLatLng: LatLng?) {
@@ -100,10 +105,14 @@ class MatchFragment : Fragment() {
         }
 
         matchDestinationMarker?.remove()
+        binding.latitudeField.setText("")
+        binding.longitudeField.setText("")
         if (newLatLng == null) {
             return
         }
 
+        binding.latitudeField.setText(newLatLng.latitude.toString())
+        binding.longitudeField.setText(newLatLng.longitude.toString())
 
         val markerOptions = MarkerOptions().apply {
             position(newLatLng)
@@ -125,6 +134,9 @@ class MatchFragment : Fragment() {
         var ageAsString: String
         try {
             ageAsString = matchToDisplay.age.toString()
+            if (matchToDisplay.age < 1) {
+                ageAsString = ""
+            }
         } catch(e: Exception) {
             Log.d("MatchFragment", "Exception while trying to convert age to string")
             ageAsString = ""
@@ -139,7 +151,7 @@ class MatchFragment : Fragment() {
 
     private fun onBestMatchChanged(bestMatch: MatchProfile?) {
         if (bestMatch == null) {
-            displayNoMatch()
+            return
         } else {
             displayMatch(bestMatch)
         }

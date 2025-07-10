@@ -1,6 +1,8 @@
 package com.extremelygood.abfahrt.classes
 
+import com.extremelygood.abfahrt.classes.MatchProfile
 import android.content.Context
+import androidx.lifecycle.LiveData
 import com.extremelygood.abfahrt.database.AppDatabase
 import androidx.room.*
 import com.extremelygood.abfahrt.database.MIGRATION_1_2
@@ -56,6 +58,7 @@ class DatabaseManager private constructor(private val context: Context) {
 
     suspend fun getAllMatches(limit: Int): List<MatchProfile> {
         return withContext(Dispatchers.IO) {
+            matchProfileDao.purgeOlderThan30Minutes()
             matchProfileDao.getAll(limit)
         }
     }
@@ -94,6 +97,20 @@ class DatabaseManager private constructor(private val context: Context) {
             }
         }
     }
+
+    suspend fun purgeOlderThan30Minutes() {
+        withContext(Dispatchers.IO) {
+            matchProfileDao.purgeOlderThan30Minutes()
+            onMatchesChangedListener?.invoke()
+        }
+    }
+
+    fun getMyUserId(): String? {
+        val prefs = context.getSharedPreferences("abfahrt_prefs", Context.MODE_PRIVATE)
+        return prefs.getString("my_user_id", null)
+    }
+
+
 
     companion object {
         @Volatile private var INSTANCE: DatabaseManager? = null

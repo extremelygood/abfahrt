@@ -98,11 +98,13 @@ class EncounterHandler(
             Log.d("EncounterHandler", "Got encounters list: " + packet.profileIdslist)
             val interestedIds = mutableListOf<String>()
 
+            val myProfile = database.loadMyProfile()
+
             for (id in packet.profileIdslist) {
                 val existingProfile = database.getMatchProfile(id)
 
                 // Does not exist locally case, we want this definitely
-                if (existingProfile == null) {
+                if (existingProfile == null && id != myProfile.id) {
                     interestedIds.add(id)
                 }
             }

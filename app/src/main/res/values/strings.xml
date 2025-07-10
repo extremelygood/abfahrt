@@ -10,7 +10,7 @@
     <string name="first_name_hint">First Name</string>
     <string name="last_name_hint">Last Name</string>
     <string name="age_hint">Age</string>
-    <string name="description_hint">Description</string>
+    <string name="description_hint">How to find me</string>
     <string name="map_hint">Where do you want to go?</string>
     <string name="required_hint">Required</string>
     <string name="latitude_hint">Latitude</string>
