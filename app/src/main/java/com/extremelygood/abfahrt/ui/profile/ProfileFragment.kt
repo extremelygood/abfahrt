@@ -166,7 +166,7 @@ class ProfileFragment : Fragment() {
 
         destinationMarker?.remove()
         destinationMarker = null
-        if (latLng == null) {
+        if (latLng == null || (latLng.latitude == 0.toDouble() && latLng.longitude == 0.toDouble())) {
             return
         }
 
