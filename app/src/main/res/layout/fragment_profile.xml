@@ -21,6 +21,27 @@
             android:layout_width="30dp"
             />
 
+        <!-- driver -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/isDriverSwitch"
+                style="@style/Field"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/driver_hint"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.8" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
         <!-- ──────────────── first name ──────────────── -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
