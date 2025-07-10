@@ -131,6 +131,9 @@ class MatchFragment : Fragment() {
         var ageAsString: String
         try {
             ageAsString = matchToDisplay.age.toString()
+            if (matchToDisplay.age < 1) {
+                ageAsString = ""
+            }
         } catch(e: Exception) {
             Log.d("MatchFragment", "Exception while trying to convert age to string")
             ageAsString = ""
