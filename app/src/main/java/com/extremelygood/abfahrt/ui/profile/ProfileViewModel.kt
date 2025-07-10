@@ -54,7 +54,15 @@ class ProfileViewModel(
             return
         }
 
-        val newProfile = _userProfile.value!!.copy(firstName = newFirstName.toString())
+        var nameToBeAssigned = newFirstName
+
+        if (newFirstName != null) {
+            if (newFirstName.length > MAX_SHORT_CHARS) {
+                nameToBeAssigned = ""
+            }
+        }
+
+        val newProfile = _userProfile.value!!.copy(firstName = nameToBeAssigned.toString())
         _userProfile.value = newProfile
 
         saveNewProfileState()
