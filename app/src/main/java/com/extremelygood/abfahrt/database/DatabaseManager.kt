@@ -21,11 +21,15 @@ class DatabaseManager private constructor(context: Context) {
     private val userProfileDao = db.userProfileDao()
 
     private var onMatchesChangedListener: (() -> Unit)? = null
+    private var onProfileChangedListener: (() -> Unit)? = null
 
     fun setOnMatchesChangedListener(callback: (() -> Unit)) {
         onMatchesChangedListener = callback
     }
 
+    fun setOnProfileChangedListener(callback: (() -> Unit)) {
+        onProfileChangedListener = callback
+    }
 
     suspend fun saveMatchProfile(profile: MatchProfile) {
         withContext(Dispatchers.IO) {
@@ -63,6 +67,7 @@ class DatabaseManager private constructor(context: Context) {
     suspend fun saveMyProfile(profile: UserProfile){
         withContext(Dispatchers.IO){
             userProfileDao.upsert(profile)
+            onProfileChangedListener?.invoke()
         }
     }
 
