@@ -152,6 +152,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
+                        android:maxLines="1"
                         android:layout_weight="1"
                         android:digits="0123456789."
                         android:hint="@string/latitude_hint"
@@ -168,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:layout_weight="1"
+                        android:maxLines="1"
                         android:digits="0123456789."
                         android:hint="@string/longitude_hint"
                         android:inputType="numberDecimal" />
