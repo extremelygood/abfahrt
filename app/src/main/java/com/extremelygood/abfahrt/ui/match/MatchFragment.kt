@@ -102,10 +102,14 @@ class MatchFragment : Fragment() {
         }
 
         matchDestinationMarker?.remove()
+        binding.latitudeField.setText("")
+        binding.longitudeField.setText("")
         if (newLatLng == null) {
             return
         }
 
+        binding.latitudeField.setText(newLatLng.latitude.toString())
+        binding.longitudeField.setText(newLatLng.longitude.toString())
 
         val markerOptions = MarkerOptions().apply {
             position(newLatLng)
