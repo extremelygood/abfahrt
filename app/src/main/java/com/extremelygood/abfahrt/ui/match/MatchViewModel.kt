@@ -82,9 +82,15 @@ class MatchViewModel(
         }
     }
 
+
+
     init {
         databaseManager.setOnMatchesChangedListener {
             evaluateMatches()
         }
+        databaseManager.setOnProfileChangedListener {
+            evaluateMatches()
+        }
+        evaluateMatches()
     }
 }
