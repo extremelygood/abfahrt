@@ -5,25 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.extremelygood.abfahrt.AbfahrtApplication
 import com.extremelygood.abfahrt.databinding.FragmentMatchBinding
-import com.extremelygood.abfahrt.databinding.FragmentProfileBinding
-import com.extremelygood.abfahrt.viewmodels.MatchViewModel
+import com.extremelygood.abfahrt.ui.profile.ProfileViewModel
+import com.extremelygood.abfahrt.ui.viewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import kotlin.getValue
 
 class MatchFragment : Fragment() {
 
     private var _binding: FragmentMatchBinding? = null
     private val binding get() = _binding!!
 
-
-    private lateinit var matchViewModel: MatchViewModel
+    private val matchViewModel: MatchViewModel by viewModels {
+        viewModelFactory {
+            MatchViewModel(
+                AbfahrtApplication.appModule.databaseManager
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        matchViewModel = ViewModelProvider(this).get(MatchViewModel::class.java)
     }
 
     override fun onCreateView(
