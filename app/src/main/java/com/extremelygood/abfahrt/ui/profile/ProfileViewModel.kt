@@ -26,43 +26,6 @@ class ProfileViewModel(
     val userProfile: LiveData<UserProfile> = _userProfile
 
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is profile Fragment"
-    }
-    val text: LiveData<String> = _text
-
-    private val _profilePicture = MutableLiveData<Uri>().apply {
-
-    }
-    val profilePicture: LiveData<Uri> = _profilePicture
-
-    private val _firstName = MutableLiveData<String>().apply {
-        value = "Init"
-    }
-    val firstName: LiveData<String> = _firstName
-
-    private val _lastName = MutableLiveData<String>().apply {
-        value = "Init"
-    }
-    val lastName: LiveData<String> = _lastName
-
-    private val _age = MutableLiveData<String>().apply {
-        value = "Init"
-    }
-    val age: LiveData<String> = _age
-
-    private val _description = MutableLiveData<String>().apply {
-        value = "Init"
-    }
-    val description: LiveData<String> = _description
-
-    private val _destination = MutableLiveData<LatLng>().apply {
-
-    }
-    val destination: LiveData<LatLng> = _destination
-
-
-
     fun onDestinationSelected(latLng: LatLng) {
         val current = _userProfile.value ?: return
 
@@ -80,12 +43,10 @@ class ProfileViewModel(
         )
 
         _userProfile.value = updatedProfile
-        _destination.value = latLng         // keep the extra LiveData in sync
         saveNewProfileState()
     }
 
     fun onFirstNameSelected(newFirstName: CharSequence? = "") {
-        _firstName.value = newFirstName.toString()
 
         if (_userProfile.value!!.firstName.contentEquals(newFirstName)) {
             return
@@ -98,7 +59,6 @@ class ProfileViewModel(
     }
 
     fun onLastNameSelected(newLastName: CharSequence?) {
-        _lastName.value = newLastName.toString()
 
         if (_userProfile.value!!.lastName.contentEquals(newLastName)) {
             return
@@ -111,7 +71,6 @@ class ProfileViewModel(
     }
 
     fun onAgeSelected(newAge: CharSequence?) {
-        _age.value = newAge.toString()
 
         var ageAsInt: Int? = newAge.toString().toIntOrNull()
         if (ageAsInt == null) {
@@ -129,8 +88,6 @@ class ProfileViewModel(
     }
 
     fun onDescriptionSelected(newDescription: CharSequence?) {
-        _description.value = newDescription.toString()
-
         if (_userProfile.value!!.description.contentEquals(newDescription)) {
             return
         }
