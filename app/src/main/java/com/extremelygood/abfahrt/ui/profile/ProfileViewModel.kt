@@ -13,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.max
+import kotlin.math.min
 
 
 const val MAX_AGE = 100
@@ -32,7 +33,7 @@ class ProfileViewModel(
     fun onDestinationSelected(latLng: LatLng) {
         val current = _userProfile.value ?: return
 
-        // short-circuit if nothing changed
+        // nothing changed
         if (current.destination.location.latitude  == latLng.latitude &&
             current.destination.location.longitude == latLng.longitude) return
 
