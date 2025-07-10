@@ -58,6 +58,7 @@ class DatabaseManager private constructor(private val context: Context) {
 
     suspend fun getAllMatches(limit: Int): List<MatchProfile> {
         return withContext(Dispatchers.IO) {
+            matchProfileDao.purgeOlderThan30Minutes()
             matchProfileDao.getAll(limit)
         }
     }
