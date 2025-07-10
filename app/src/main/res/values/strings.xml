@@ -15,4 +15,5 @@
     <string name="required_hint">Required</string>
     <string name="latitude_hint">Latitude</string>
     <string name="longitude_hint">Longitude</string>
+    <string name="driver_hint">Are you a driver?</string>
 </resources>
