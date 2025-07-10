@@ -14,6 +14,7 @@ val module = SerializersModule {
         subclass(RequestHeartbeat::class)
         subclass(AcknowledgeHeartbeat::class)
         subclass(EncounterPacket::class)
+        subclass(EncountersListPacket::class)
         subclass(ImagePacket::class)
         subclass(RequestEncountersListPacket::class)
         subclass(RequestEncountersPacket::class)

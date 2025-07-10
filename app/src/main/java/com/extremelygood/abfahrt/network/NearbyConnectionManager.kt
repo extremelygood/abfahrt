@@ -1,6 +1,7 @@
 package com.extremelygood.abfahrt.network
 
 import android.content.Context
+import android.util.Log
 import com.google.android.gms.nearby.Nearby
 import com.google.android.gms.nearby.connection.AdvertisingOptions
 import com.google.android.gms.nearby.connection.ConnectionInfo
@@ -15,8 +16,9 @@ import com.google.android.gms.nearby.connection.Payload
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.coroutineContext
+import kotlin.random.Random
 
-const val TEST_TRANSMITTER_NAME: String = "Richtiger Kevin"
+val TEST_TRANSMITTER_NAME: String = Random.nextInt(100_000).toString()
 
 /**
  * Class for managing a nearby connection
@@ -147,6 +149,8 @@ class NearbyConnectionManager(
      * Low-Level method executed when a connection is established
      */
     private fun connectionEstablished(endpointID: CharSequence): NearbyConnection {
+        Log.d("NearbyConnectionManager", "Connection established")
+
         val connection = NearbyConnection(this, endpointID)
         connectionsMap[endpointID] = connection
 
