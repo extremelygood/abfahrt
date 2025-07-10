@@ -66,6 +66,11 @@ class MatchViewModel(
                     continue
                 }
 
+                // Role check
+                if (ownProfile.isDriver == match.isDriver) {
+                    continue
+                }
+
                 // Compare to current closest
                 if (closestAcceptableMatch != null) {
                     if (closestDistance!! > distance) {
