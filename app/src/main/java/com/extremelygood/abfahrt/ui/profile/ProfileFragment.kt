@@ -110,11 +110,9 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initViewModelBindings() {
-        ///*
         profileViewModel.userProfile.observe(viewLifecycleOwner) { newProfileState ->
             drawFromProfile(newProfileState)
         }
-         //*/
     }
 
     private fun drawFromProfile(profile: UserProfile) {

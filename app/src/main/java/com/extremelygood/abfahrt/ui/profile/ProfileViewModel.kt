@@ -99,14 +99,46 @@ class ProfileViewModel(
 
     fun onLastNameSelected(newLastName: CharSequence?) {
         _lastName.value = newLastName.toString()
+
+        if (_userProfile.value!!.lastName.contentEquals(newLastName)) {
+            return
+        }
+
+        val newProfile = _userProfile.value!!.copy(lastName = newLastName.toString())
+        _userProfile.value = newProfile
+
+        saveNewProfileState()
     }
 
     fun onAgeSelected(newAge: CharSequence?) {
         _age.value = newAge.toString()
+
+        var ageAsInt: Int? = newAge.toString().toIntOrNull()
+        if (ageAsInt == null) {
+            return
+        }
+
+        if (_userProfile.value!!.age == ageAsInt) {
+            return
+        }
+
+        val newProfile = _userProfile.value!!.copy(age = ageAsInt)
+        _userProfile.value = newProfile
+
+        saveNewProfileState()
     }
 
     fun onDescriptionSelected(newDescription: CharSequence?) {
         _description.value = newDescription.toString()
+
+        if (_userProfile.value!!.description.contentEquals(newDescription)) {
+            return
+        }
+
+        val newProfile = _userProfile.value!!.copy(description = newDescription.toString())
+        _userProfile.value = newProfile
+
+        saveNewProfileState()
     }
 
 
