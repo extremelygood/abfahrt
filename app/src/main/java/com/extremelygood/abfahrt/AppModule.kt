@@ -5,14 +5,16 @@ import com.extremelygood.abfahrt.classes.DatabaseManager
 
 
 interface AppModule {
-    val databaseManager: DatabaseManager;
+    val databaseManager: DatabaseManager
+    val appContext: Context
 }
 
 
 class AppModuleImpl(
-    private val appContext: Context
+    context: Context
 ): AppModule {
     override val databaseManager: DatabaseManager by lazy {
         DatabaseManager.getInstance(appContext)
     }
+    override val appContext: Context = context
 }
