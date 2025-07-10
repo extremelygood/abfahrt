@@ -73,9 +73,6 @@ class DatabaseManager private constructor(context: Context) {
             }
         }
     }
-    fun observeMatchProfile(userId: String): LiveData<MatchProfile?> {
-        return matchProfileDao.getByIdLive(userId)
-    }
 
 
 }
