@@ -49,6 +49,7 @@ class DatabaseManager private constructor(context: Context) {
     suspend fun deleteMatchProfile(userId: String) {
         withContext(Dispatchers.IO) {
             matchProfileDao.deleteById(userId)
+            onMatchesChangedListener?.invoke()
         }
     }
 
